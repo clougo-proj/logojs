@@ -1,0 +1,6 @@
+module "abc
+module "def
+endmodule
+endmodule
+module []
+module {}

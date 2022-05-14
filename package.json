@@ -1,0 +1,38 @@
+{
+  "name": "@clougo-proj/logojs",
+  "version": "1.0.0",
+  "description": "logojs",
+  "devDependencies": {
+    "eslint": "latest"
+  },
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "eslint": "eslint .",
+    "pkmod": "node tools/pkdir mod > generated/mod.js",
+    "pkut": "node tools/pkdir unittests > generated/unittests.js",
+    "pkct": "node tools/pkdir clitests > generated/clitests.js",
+    "pkdemo": "node tools/pkdir demo > generated/demo.js",
+    "pkucblogohelp": "node tools/pkdir UCBLogo > generated/UCBLogo.js",
+    "build": "npm run pkdemo & npm run pkut & npm run pkct & npm run pkmod & npm run pkucblogohelp",
+    "clitest": "node testcli",
+    "unittest": "node logocli --test --on:verbose && node logocli --test --on:postfix,verbose",
+    "test": "npm run eslint && npm run unittest && npm run clitest"
+  },
+  "type": "module",
+  "source": "logojs.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/clougo-proj/logojs"
+  },
+  "bin": {
+    "logo": "./logocli.js"
+  },
+  "keywords": [
+    "LOGO"
+  ],
+  "author": "Clougo Project",
+  "license": "MIT"
+}
