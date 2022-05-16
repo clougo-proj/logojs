@@ -1,0 +1,28 @@
+make "KEY_LEFT_ARROW 37
+make "KEY_RIGHT_ARROW 39
+make "KEY_UP_ARROW 38
+make "KEY_DOWN_ARROW 40
+
+to on_keydown
+  localmake "key keyboardvalue
+  if :key = :KEY_UP_ARROW [
+    fd 10
+    stop
+  ]
+  if :key = :KEY_DOWN_ARROW [
+    bk 10
+    stop
+  ]
+  if :key = :KEY_LEFT_ARROW [
+    lt 5
+    stop
+  ]
+  if :key = :KEY_RIGHT_ARROW [
+    rt 5
+    stop
+  ]
+end
+
+(keyboardon "on_keydown [])
+wait 1000
+keyboardoff
