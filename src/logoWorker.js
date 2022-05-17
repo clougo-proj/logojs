@@ -5,7 +5,7 @@
 
 // Logo worker for Clougo
 
-import CanvasCommon from "./canvasCommon.js";
+import CanvasCommon from "../canvasCommon.js";
 
 import { Logo, sys } from "./logoc.js";
 

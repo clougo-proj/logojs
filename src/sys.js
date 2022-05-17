@@ -57,16 +57,16 @@ export default {
 
         sys.global = {
             unitTestsJsSrcFile: async () => {
-                return (await import("./generated/unittests.js")).default;
+                return (await import("../generated/unittests.js")).default;
             },
             demoJsSrcFile: async () => {
-                return (await import("./generated/demo.js")).default;
+                return (await import("../generated/demo.js")).default;
             },
             ucbLogoJsSrcFile: async () => {
-                return (await import("./generated/UCBLogo.js")).default;
+                return (await import("../generated/UCBLogo.js")).default;
             },
             modJsSrcFile: async () => {
-                return (await import("./generated/mod.js")).default;
+                return (await import("../generated/mod.js")).default;
             }
         };
 

@@ -6,15 +6,15 @@
 // Logo's runtime library
 // Runs in browser's Logo worker thread or Node's main thread
 
-import Ds from "./lib/ds.js";
-import Comm from "./lib/comm.js";
-import Al from "./lib/al.js";
-import Graphics from "./lib/graphics.js";
-import Ws from "./lib/ws.js";
-import Ctrl from "./lib/ctrl.js";
-import Os from "./lib/os.js";
-import Misc from "./lib/misc.js";
-import Clougo from "./lib/clougo.js";
+import Ds from "../lib/ds.js";
+import Comm from "../lib/comm.js";
+import Al from "../lib/al.js";
+import Graphics from "../lib/graphics.js";
+import Ws from "../lib/ws.js";
+import Ctrl from "../lib/ctrl.js";
+import Os from "../lib/os.js";
+import Misc from "../lib/misc.js";
+import Clougo from "../lib/clougo.js";
 
 export default {
     "create": function(logo, sys) {

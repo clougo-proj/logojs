@@ -9,7 +9,7 @@
 
 import { readFileSync } from "fs";
 
-import { Logo, sys } from "./logoc.js";
+import { Logo, sys } from "./src/logoc.js";
 
 const LOGO_EVENT = Logo.constants.LOGO_EVENT;
 
