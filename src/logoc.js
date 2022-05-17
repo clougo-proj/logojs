@@ -5,10 +5,10 @@
 
 // Logo core module
 
-import seedRandom from "./seedrandom/seedrandom.min.js";
+import seedRandom from "../seedrandom/seedrandom.min.js";
 import Sys from "./sys.js";
 import TestRunner from "./testrunner.js";
-import CONSTANTS from "./constants.js";
+import CONSTANTS from "../constants.js";
 import Config from "./config.js";
 import Type from "./type.js";
 import Trace from "./trace.js";
