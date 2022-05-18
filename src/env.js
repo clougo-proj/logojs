@@ -129,6 +129,24 @@ export default {
 
         clearWorkspace();
 
+        let _resolveCall = {};
+
+        async function getAsyncReturnVal(callId) {
+            logo.env.prepareToBeBlocked();
+            return await new Promise((resolve) => {
+                _resolveCall[callId] = resolve;
+            });
+        }
+        env.getAsyncReturnVal = getAsyncReturnVal;
+
+        function onAsyncReturnVal(retVal, callId) {
+            if (callId in _resolveCall) {
+                _resolveCall[callId](retVal);
+                delete _resolveCall[callId];
+            }
+        }
+        env.onAsyncReturnVal = onAsyncReturnVal;
+
         function registerUserInputResolver(resolve) {
             _resolveUserInput = resolve;
             ext.io.envstate("continue");

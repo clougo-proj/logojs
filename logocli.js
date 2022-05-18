@@ -156,6 +156,7 @@ function makeSrcRunner() {
 }
 
 function makeLogoDependencies() {
+    let _focus = "Clougo";
     return  {
         "entry": {
             "exec": async function(logoSrc, srcPath) { await logo.env.exec(logoSrc, true, srcPath); },
@@ -172,6 +173,8 @@ function makeLogoDependencies() {
             "drawflush": function() {},
             "editorLoad": function() {},
             "canvasSnapshot": function() {},
+            "getFocus": function() { return _focus; },
+            "setFocus": function(name) { _focus = name; },
             "cleartext": function() { process.stdout.write(sys.getCleartextChar()); },
             "envstate": function() {},
             "exit": function(batchMode) {

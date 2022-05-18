@@ -1,0 +1,8 @@
+You don't say what to do with Canvas
+    at 2,1	focus_err.lgo
+Not enough inputs to setfocus
+    at 3,9	focus_err.lgo
+setfocus doesn't like {} as input
+    at 4,1	focus_err.lgo
+Too much inside ()'s
+    at 5,14	focus_err.lgo

@@ -58,6 +58,16 @@ function webCanvasSnapshot() {
     postMessage([LOGO_EVENT.CANVAS_SNAPSHOT]);
 }
 
+async function webGetFocus() {
+    let callId = crypto.randomUUID();
+    postMessage([LOGO_EVENT.GET_FOCUS, callId]);
+    return await logo.env.getAsyncReturnVal(callId);
+}
+
+function webSetFocus(name) {
+    postMessage([LOGO_EVENT.SET_FOCUS, name]);
+}
+
 function webExit(batchMode) {
     if (!batchMode) {
         postMessage([LOGO_EVENT.OUT, "Thank you for using Logo. Bye!"]);
@@ -123,6 +133,10 @@ function registerEventHandler(logoUserInputListener) {
         logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).onMouseEvent(getMsgBody(e));
     };
 
+    webMsgHandler[LOGO_METHOD.RETURN_VALUE] = function(e) {
+        logo.env.onAsyncReturnVal(getMsgBody(e), getMsgId(e));
+    };
+
     webMsgHandler[LOGO_METHOD.CONFIG] = function(e) {
         logo.config.override(getMsgBody(e));
         logo.env.loadDefaultLogoModules();
@@ -169,6 +183,8 @@ function makeLogoDependencies() {
             "cleartext": webCleartext,
             "editorLoad": webEditorLoad,
             "canvasSnapshot": webCanvasSnapshot,
+            "getFocus": webGetFocus,
+            "setFocus": webSetFocus,
             "drawflush": function() {
                 ext.canvas.flush();
             },
