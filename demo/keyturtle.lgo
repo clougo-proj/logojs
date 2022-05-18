@@ -23,6 +23,7 @@ to on_keydown
   ]
 end
 
+setfocus [Canvas]
 (keyboardon "on_keydown [])
 wait 1000
 keyboardoff

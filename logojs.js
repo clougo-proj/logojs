@@ -78,6 +78,12 @@ export default {
             case LOGO_EVENT.CANVAS_SNAPSHOT:
                 eventHandler.canvasSnapshot();
                 break;
+            case LOGO_EVENT.GET_FOCUS:
+                eventHandler.getFocus(msg[1]);
+                break;
+            case LOGO_EVENT.SET_FOCUS:
+                eventHandler.setFocus(msg[1]);
+                break;
             default:
             }
         };
@@ -106,6 +112,9 @@ export default {
             },
             "onMouseEvent": function(event) {
                 worker.postMessage([LOGO_METHOD.MOUSE_EVENT, event]);
+            },
+            "returnValue": function(val, callId) {
+                worker.postMessage([LOGO_METHOD.RETURN_VALUE, val, callId]);
             },
             "turtleUndo": function() {
                 worker.postMessage([LOGO_METHOD.TURTLE_UNDO]);

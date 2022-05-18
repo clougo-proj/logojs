@@ -1,0 +1,5 @@
+setfocus "Canvas
+getfocus
+setfocus
+setfocus {}
+(setfocus "a "b)

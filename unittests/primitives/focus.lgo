@@ -1,0 +1,6 @@
+setfocus "Canvas
+show getfocus
+setfocus "Editor
+show getfocus
+setfocus [Terminal Input]
+show getfocus

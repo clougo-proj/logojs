@@ -105,6 +105,8 @@ export default {
             let stderrBuffer = "";
             let turtleBuffer = "";
 
+            let _focus = "Clougo";
+
             const extForTest = {
                 "entry": {
                     "exec": async function(logoSrc, srcPath) { await logoForUnitTests.env.exec(logoSrc, true, srcPath); },
@@ -137,6 +139,8 @@ export default {
                         stdoutBuffer += sys.getCleartextChar();
                     },
                     "canvasSnapshot": function() {},
+                    "getFocus": function() { return _focus; },
+                    "setFocus": function(name) { _focus = name; },
                     "mockStdin": function(text) {
                         extForTest.io.onstdin = function(logoUserInputListener) {
                             logoUserInputListener(text);

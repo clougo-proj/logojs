@@ -156,3 +156,5 @@ keyboardon execl runl
 keyboardon1 execl runl
 keyboardon2 execl runl
 keyboardon_err execl runl
+focus exec run
+focus_err execl runl
