@@ -1,0 +1,6 @@
+lput
+lput 1
+lput [] "abc
+lput "xy "abc
+lput {} "abc
+(lput {} [] [])

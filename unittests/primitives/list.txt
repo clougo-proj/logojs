@@ -15,7 +15,9 @@ int_err runl execl
 log10 run exec
 log10_negative_input run exec
 lput run exec
+lput_err runl execl
 fput run exec
+fput_err runl execl
 first run exec
 first_err runl execl
 last run exec

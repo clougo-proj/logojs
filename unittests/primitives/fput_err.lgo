@@ -1,0 +1,6 @@
+fput
+fput 1
+fput [] "abc
+fput "xy "abc
+fput {} "abc
+(fput {} [] [])
