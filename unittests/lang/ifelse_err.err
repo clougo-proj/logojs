@@ -19,7 +19,7 @@ I don't know how to false
 ifelse doesn't like {} as input
     at 10,1	ifelse_err.lgo
 You don't say what to do with 100
-    at 11,1	ifelse_err.lgo
+    at 11,18	ifelse_err.lgo
 I don't know how to abc
     at 12,1	ifelse_err.lgo
 I don't know how to pr1
