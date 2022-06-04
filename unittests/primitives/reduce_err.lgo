@@ -1,0 +1,5 @@
+reduce [] []
+reduce
+reduce []
+reduce [] {}
+(reduce [] [1] [])

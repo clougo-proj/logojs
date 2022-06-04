@@ -1,0 +1,10 @@
+reduce doesn't like [] as input
+    at 1,1	reduce_err.lgo
+Not enough inputs to reduce
+    at 2,7	reduce_err.lgo
+Not enough inputs to reduce
+    at 3,10	reduce_err.lgo
+reduce doesn't like {} as input
+    at 4,1	reduce_err.lgo
+Too much inside ()'s
+    at 5,16	reduce_err.lgo

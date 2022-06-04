@@ -1,0 +1,29 @@
+to max :a :b
+  output ifelse :a > :b [:a] [:b]
+end
+
+print reduce "max [1 7 4 2 3]
+print reduce "max [0]
+
+print "
+
+print reduce [ifelse ?1 < ?2 [?1][?2]] [1 7 4 2 3]
+print reduce [[a b] ifelse :a < :b [:a][:b]] [1 7 4 2 3]
+print reduce [[a b][output ifelse :a < :b [:a][:b]]] [1 7 4 2 3]
+
+print "
+
+print reduce [ifelse ?1 < ?2 [?1][?2]] 17423
+print reduce [[a b] ifelse :a < :b [:a][:b]] 17423
+print reduce [[a b][output ifelse :a < :b [:a][:b]]] 17423
+
+print "
+
+to max1 [:inputs] 2
+  if emptyp :inputs ~
+    [(throw "error [not enough inputs to max])]
+  output reduce [ifelse ?1 > ?2 [?1] [?2]] :inputs
+end
+
+show max1 1 2
+show (max1 1 7 4 2 3)
