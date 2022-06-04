@@ -416,7 +416,7 @@ export default {
                 return;
             }
 
-            code.append(genInstrList(evxContext.next(), "ifelse"));
+            code.append(genInstrList(evxContext.next(), "ifelse", undefined, true));
             code.append("} else {\n");
 
             if (!logo.type.isLogoList(evxContext.peekNextToken())) {
@@ -424,11 +424,8 @@ export default {
                 return;
             }
 
-            code.append(genInstrList(evxContext.next(), "ifelse"));
-
+            code.append(genInstrList(evxContext.next(), "ifelse", undefined, true));
             code.append("}");
-            code.append("\n;$ret=undefined;");
-
             return code;
         }
 

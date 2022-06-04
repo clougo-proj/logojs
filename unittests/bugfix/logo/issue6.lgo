@@ -1,0 +1,2 @@
+show ifelse "true [1] [2]
+show ifelse "false [1] [2]
