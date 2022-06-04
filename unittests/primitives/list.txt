@@ -158,3 +158,5 @@ keyboardon2 execl runl
 keyboardon_err execl runl
 focus exec run
 focus_err execl runl
+reduce exec run
+reduce_err execl runl

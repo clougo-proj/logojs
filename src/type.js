@@ -774,9 +774,15 @@ export default {
         type.validateInputWordOrList = validateInputWordOrList;
 
         function validateInputNonEmptyList(value) {
-            throwIf(!(isLogoList(value) && length(value) >= 1), LogoException.INVALID_INPUT, value);
+            throwIf(!(isLogoList(value) && length(value) > 0), LogoException.INVALID_INPUT, value);
         }
         type.validateInputNonEmptyList = validateInputNonEmptyList;
+
+        function validateInputNonEmptyWordOrList(value) {
+            throwIf(!(isLogoWord(value) && length(value) > 0) && !(isLogoList(value) && length(value) > 0),
+                LogoException.INVALID_INPUT, value);
+        }
+        type.validateInputNonEmptyWordOrList = validateInputNonEmptyWordOrList;
 
         function validateInputRGB(value) {
             throwIf(!isColor(value), LogoException.INVALID_INPUT, value);
