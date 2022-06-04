@@ -1,0 +1,12 @@
+Not enough inputs to lput
+    at 1,5	lput_err.lgo
+Not enough inputs to lput
+    at 2,7	lput_err.lgo
+lput doesn't like abc as input
+    at 3,1	lput_err.lgo
+lput doesn't like abc as input
+    at 4,1	lput_err.lgo
+lput doesn't like abc as input
+    at 5,1	lput_err.lgo
+Too much inside ()'s
+    at 6,13	lput_err.lgo
