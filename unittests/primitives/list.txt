@@ -164,3 +164,5 @@ reduce exec run
 reduce_err execl runl
 map exec run
 map_err execl runl
+map.se exec run
+map.se_err execl runl
