@@ -162,3 +162,5 @@ focus exec run
 focus_err execl runl
 reduce exec run
 reduce_err execl runl
+map exec run
+map_err execl runl

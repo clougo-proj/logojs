@@ -1,0 +1,4 @@
+map
+map []
+map [] {}
+(map [word ?1 ?2] 12345 [[a] [b] [c] [d] [e]])

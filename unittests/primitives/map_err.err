@@ -1,0 +1,9 @@
+Not enough inputs to map
+    at 1,4	map_err.lgo
+Not enough inputs to map
+    at 2,7	map_err.lgo
+map doesn't like {} as input
+    at 3,1	map_err.lgo
+word doesn't like [a] as input
+    [] at 4,7	map_err.lgo
+    at 4,2	map_err.lgo
