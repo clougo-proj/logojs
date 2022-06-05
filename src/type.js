@@ -1233,6 +1233,18 @@ export default {
                 (typeof v === "boolean") ? booleanToString(v) : v;
         }
 
+        function listToWord(list) {
+            let word = "";
+            for (let i in list) {
+                let item = list[i];
+                validateInputWord(item);
+                word += item;
+            }
+
+            return word;
+        }
+        type.listToWord = listToWord;
+
         function toString(v, outterBracket = false) {
             if (isQuotedLogoWord(v)) {
                 return unquoteLogoWord(v);

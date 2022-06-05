@@ -1,0 +1,9 @@
+SHOW MAP [2 * ?] [1 2 3 4 5 6]
+show map [1 + ?] 87654
+SHOW (MAP "LIST [a b c] [d e f])
+show map [word # ?rest] "abcdef
+show (map [word (?rest 1) (?rest 2)] "abcdef 123456)
+show (map [word ?1 ?2] 12345 [aa bb cc dd ee])
+show (map [word ?2 ?1] [aa bb cc dd ee] 12345)
+show map [?1] []
+show count map [?1] "

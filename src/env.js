@@ -400,7 +400,12 @@ export default {
             logo.type.throwIf(_curSlot === undefined || slotNum > _curSlot.rest.length,
                 logo.type.LogoException.INVALID_INPUT, slotNum);
 
-            return logo.type.makeLogoList(_curSlot.rest[slotNum - 1]);
+            let rest = _curSlot.rest[slotNum - 1];
+            if (logo.type.isLogoWord(rest)) {
+                return rest;
+            }
+
+            return logo.type.makeLogoList(rest);
         }
         env.getSlotRestValue = getSlotRestValue;
 
