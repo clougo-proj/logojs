@@ -1,0 +1,12 @@
+Not enough inputs to filter
+    at 1,7	filter_err.lgo
+Not enough inputs to filter
+    at 2,10	filter_err.lgo
+filter doesn't like no value as input
+    at 3,1	filter_err.lgo
+filter doesn't like {} as input
+    at 4,1	filter_err.lgo
+filter doesn't like 1 as input
+    at 5,1	filter_err.lgo
+filter doesn't like no value as input
+    at 6,2	filter_err.lgo

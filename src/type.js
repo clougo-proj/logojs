@@ -1091,7 +1091,7 @@ export default {
         }
         type.isNotLogoFalse = isNotLogoFalse;
 
-        function isLogoBooleanTrue(value, name, srcmap) {
+        function isLogoBooleanTrue(value, name = undefined, srcmap = undefined) {
             if (value === true || value == "true") {
                 return true;
             }
@@ -1100,8 +1100,9 @@ export default {
                 return false;
             }
 
-            throw LogoException.INVALID_INPUT.withParam([name, toString(value, true)],
-                srcmap);
+            if (name !== undefined) {
+                throw LogoException.INVALID_INPUT.withParam([name, toString(value, true)], srcmap);
+            }
         }
         type.isLogoBooleanTrue = isLogoBooleanTrue;
 
