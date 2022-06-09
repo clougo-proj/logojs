@@ -166,3 +166,5 @@ map exec run
 map_err execl runl
 map.se exec run
 map.se_err execl runl
+filter exec run
+filter_err execl runl

@@ -1,0 +1,6 @@
+filter
+filter []
+filter [] 12
+filter [] {}
+filter [?] 12
+(filter [] 12 12)

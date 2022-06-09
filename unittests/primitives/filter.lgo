@@ -1,0 +1,16 @@
+TO VOWELP :arg
+IF :arg="a [OUTPUT "true]
+IF :arg="e [OUTPUT "true]
+IF :arg="i [OUTPUT "true]
+IF :arg="o [OUTPUT "true]
+IF :arg="u [OUTPUT "true]
+OUTPUT "false
+END
+
+show FILTER "vowelp "elephant
+
+show filter "vowelp "ab
+show filter "vowelp [a b]
+show filter "vowelp []
+show count filter "vowelp "
+show filter [? > 2] 12345
