@@ -14,3 +14,5 @@ show filter "vowelp [a b]
 show filter "vowelp []
 show count filter "vowelp "
 show filter [? > 2] 12345
+show filter [(count ?rest) > 2] 12345
+show filter [# > 3] 12345
