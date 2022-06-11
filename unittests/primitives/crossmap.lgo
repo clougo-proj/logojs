@@ -1,0 +1,19 @@
+show crossmap [word ?1 ?2] [ab cde]
+show crossmap [word ?1 ?2] [[a b] [c d e]]
+show crossmap [word ?1 ?2] [ab [c d e]]
+show crossmap [word ?1 ?2] [[a b] cde]
+show crossmap [(word ?1 ?2 ?3)] [[a b] [c d e] [f g]]
+show crossmap [(word ?1 ?2 ?3)] [ab cde fg]
+
+pr "
+
+show (crossmap [word ?1 ?2] "ab "cde)
+show (crossmap [word ?1 ?2] [a b] [c d e])
+show (crossmap [word ?1 ?2] "ab [c d e])
+show (crossmap [word ?1 ?2] [a b] "cde)
+show (crossmap [(word ?1 ?2 ?3)] [a b] [c d e] [f g])
+show (crossmap [(word ?1 ?2 ?3)] "ab "cde "fg)
+
+pr "
+
+show crossmap [word ?1 ?2] "ab

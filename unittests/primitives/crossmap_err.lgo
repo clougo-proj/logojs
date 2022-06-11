@@ -1,0 +1,5 @@
+crossmap
+crossmap {}
+crossmap [] {}
+crossmap [] [{}]
+(crossmap [] 12 345 {})
