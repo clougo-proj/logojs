@@ -1,0 +1,10 @@
+Not enough inputs to crossmap
+    at 1,9	crossmap_err.lgo
+Not enough inputs to crossmap
+    at 2,12	crossmap_err.lgo
+crossmap doesn't like {} as input
+    at 3,1	crossmap_err.lgo
+crossmap doesn't like {} as input
+    at 4,1	crossmap_err.lgo
+crossmap doesn't like {} as input
+    at 5,2	crossmap_err.lgo
