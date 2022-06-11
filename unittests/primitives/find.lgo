@@ -1,0 +1,18 @@
+TO VOWELP :arg
+IF :arg="a [OUTPUT "true]
+IF :arg="e [OUTPUT "true]
+IF :arg="i [OUTPUT "true]
+IF :arg="o [OUTPUT "true]
+IF :arg="u [OUTPUT "true]
+OUTPUT "false
+END
+
+show FIND "vowelp "elephant
+
+show find "vowelp "ab
+show find "vowelp [a b]
+show find "vowelp []
+show find "vowelp "
+show find [? > 2] 12345
+show find [(count ?rest) > 2] 12345
+show find [# > 3] 12345

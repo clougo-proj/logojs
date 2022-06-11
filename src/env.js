@@ -1339,6 +1339,10 @@ export default {
         }
         env.isProc = isProc;
 
+        function isUserDefinedProc(procName) {
+            return Object.hasOwn(moduleContext().procMetadata, procName);
+        }
+
         function isProcBodyDefined(procName) {
             return isProc(procName) && moduleContext().procMetadata[procName].body !== undefined;
         }
@@ -1348,6 +1352,15 @@ export default {
             return procName in moduleContext().procJsFunc;
         }
         env.existsProcJsFunc = existsProcJsFunc;
+
+        function existsUserDefinedProcJsFunc(procName) {
+            return Object.hasOwn(moduleContext().procJsFunc, procName);
+        }
+
+        function callingProcJsFunc(procName) {
+            return (isUserDefinedProc(procName) && existsUserDefinedProcJsFunc(procName)) ||
+                (!isUserDefinedProc(procName) && existsProcJsFunc(procName));
+        }
 
         function getProcJsFunc(procName) {
             return moduleContext().procJsFunc[procName];
@@ -1392,7 +1405,7 @@ export default {
         env.bindJsProc = bindJsProc;
 
         function getCallTarget(procName) {
-            return existsProcJsFunc(procName) ? getProcJsFunc(procName) : logo.interpreter.evxCallProcDefault;
+            return callingProcJsFunc(procName) ? getProcJsFunc(procName) : logo.interpreter.evxCallProcDefault;
         }
         env.getCallTarget = getCallTarget;
 
