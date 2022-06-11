@@ -1,0 +1,6 @@
+find
+find []
+find [] 12
+find [] {}
+find [?] 12
+(find [] 12 12)
