@@ -11,7 +11,7 @@ mouseon [][]{}[][]
 mouseon []{}[][][]
 mouseon {}[][][][]
 
-mouseon "on_left_mouse_down "on_left_mouse_up [on_right_mouse_down] [on_right_mouse_up] "on_mouse_move
+mouseon [on_left_mouse_down] [on_left_mouse_up] [on_right_mouse_down] [on_right_mouse_up] [on_mouse_move]
 ;turtle mouse move 0 1
 ;turtle mouse down -101.2 99.1 0
 ;turtle mouse up -110.7 -1.1 0

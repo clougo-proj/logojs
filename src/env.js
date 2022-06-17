@@ -112,7 +112,8 @@ export default {
         let _envState, _runTime, _userInput, _resolveUserInput;
         let _callStack, _frameProcName;
         let _genJs;
-        let _procName, _procSrcmap;
+        let _procName;
+        let _procSrcmap = logo.type.SRCMAP_NULL;
 
         let _moduleContext, _moduleExport, _super, _subClass, _module;
         let _globalJsFunc, _globalMetadata;
@@ -166,7 +167,6 @@ export default {
         function setProcName(procName) {
             _procName = procName;
         }
-        env.setProcName = setProcName;
 
         function getProcName() {
             return _procName;
@@ -176,7 +176,6 @@ export default {
         function setProcSrcmap(procSrcmap) {
             _procSrcmap = procSrcmap;
         }
-        env.setProcSrcmap = setProcSrcmap;
 
         function getProcSrcmap() {
             return _procSrcmap;
@@ -318,24 +317,61 @@ export default {
         }
         env.getFrameProcName = getFrameProcName;
 
-        function callProc(name, srcmap, ...args) {
+        function callProcHelper(name, srcmap, call) {
+            let prevName = getProcName();
+            let prevSrcmap = getProcSrcmap();
+
             setProcName(name);
             setProcSrcmap(srcmap);
-            return getCallTarget(name).apply(undefined, args);
+
+            try {
+                let retVal = call();
+                setProcName(prevName);
+                setProcSrcmap(prevSrcmap);
+                return retVal;
+            } catch (e) {
+                setProcName(prevName);
+                setProcSrcmap(prevSrcmap);
+                throw e;
+            }
+        }
+
+        function callProc(name, srcmap, ...args) {
+            return callProcHelper(name, srcmap, () => getCallTarget(name).apply(undefined, args));
         }
         env.callProc = callProc;
 
-        async function callProcAsync(name, srcmap, ...args) {
+        async function callProcAsyncHelper(name, srcmap, call) {
+            let prevName = getProcName();
+            let prevSrcmap = getProcSrcmap();
+
             setProcName(name);
             setProcSrcmap(srcmap);
-            let retVal = await getCallTarget(name).apply(undefined, args);
 
-            if (isMacro(name)) {
-                validateMacroOutput(retVal, name, srcmap);
-                return await getPrimitive("run").apply(undefined, [retVal, true]);
+            try {
+                let retVal = await call();
+                setProcName(prevName);
+                setProcSrcmap(prevSrcmap);
+                return retVal;
+            } catch (e) {
+                setProcName(prevName);
+                setProcSrcmap(prevSrcmap);
+                throw e;
             }
+        }
+        env.callProcAsyncHelper = callProcAsyncHelper;
 
-            return retVal;
+        async function callProcAsync(name, srcmap, ...args) {
+            return await callProcAsyncHelper(name, srcmap, async () => {
+                let retVal = await getCallTarget(name).apply(undefined, args);
+
+                if (isMacro(name)) {
+                    validateMacroOutput(retVal, name, srcmap);
+                    retVal = await getPrimitive("run").apply(undefined, [retVal, true]);
+                }
+
+                return retVal;
+            });
         }
         env.callProcAsync = callProcAsync;
 
@@ -360,16 +396,13 @@ export default {
         }
 
         function callPrimitiveOperator(name, srcmap, ...args) {
-            setProcName(name);
-            setProcSrcmap(srcmap);
-            return logo.lrt.util.getBinaryOperatorRuntimeFunc(name).apply(undefined, args);
+            return callProcHelper(name, srcmap, () =>logo.lrt.util.getBinaryOperatorRuntimeFunc(name).apply(undefined, args));
         }
         env.callPrimitiveOperator = callPrimitiveOperator;
 
         async function callPrimitiveOperatorAsync(name, srcmap, ...args) {
-            setProcName(name);
-            setProcSrcmap(srcmap);
-            return logo.lrt.util.getBinaryOperatorRuntimeFunc(name).apply(undefined, args);
+            return await callProcAsyncHelper(name, srcmap,
+                async () => await logo.lrt.util.getBinaryOperatorRuntimeFunc(name).apply(undefined, args));
         }
         env.callPrimitiveOperatorAsync = callPrimitiveOperatorAsync;
 
@@ -1183,13 +1216,13 @@ export default {
 
             if (getGenJs() && !macroExpand && (_userBlockCalled.has(template) || logo.config.get("eagerJitInstrList"))) {
                 return await resetScopeStackAfterExecute(async () => {
-                    if (pushCallStack) {
+                    if (srcmap !== logo.type.SRCMAP_NULL && pushCallStack) {
                         prepareCallProc(logo.type.LAMBDA_EXPR, srcmap, slot);
                     }
 
                     let retVal = await callLogoInstrListAsync(template, slot.param);
 
-                    if (pushCallStack) {
+                    if (srcmap !== logo.type.SRCMAP_NULL && pushCallStack) {
                         completeCallProc();
                     }
 
