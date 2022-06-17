@@ -9,8 +9,8 @@ keyboardon doesn't like {} as input
 keyboardon doesn't like {} as input
     at 6,2	keyboardon_err.lgo
 I don't know how to on_key_down
-    at 8,1	keyboardon_err.lgo
+    at 8,13	keyboardon_err.lgo
 I don't know how to on_key_down
-    at 11,2	keyboardon_err.lgo
+    at 11,14	keyboardon_err.lgo
 I don't know how to on_key_up
-    at 11,2	keyboardon_err.lgo
+    at 11,28	keyboardon_err.lgo

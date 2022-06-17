@@ -1,0 +1,17 @@
+cascade.2
+cascade.2 1 []
+cascade.2 1 {} 1
+cascade.2 {} [] 1
+cascade.2 [?>2] 1 1
+cascade.2 2 {} 1
+(cascade.2 2 [?+1] 1 {})
+
+cascade.2 0 [] 1
+cascade.2 ["true] [] 2
+cascade.2 "test2 [? + 1] 1
+cascade.2 2 [?+1] 1 [?+#]
+
+cascade.2 5 [lput # ?] []
+cascade.2 [vowelp first ?] [bf ?] "spring
+cascade.2 5 [# * ?] 1
+cascade.2 [vowelp first ?] [word bf ? first ?] "fox [word ? "ay]

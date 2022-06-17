@@ -172,3 +172,7 @@ find exec run
 find_err execl runl
 crossmap exec run
 crossmap_err execl runl
+cascade exec run
+cascade_err execl runl
+cascade.2 exec run
+cascade.2_err execl runl

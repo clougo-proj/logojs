@@ -1,0 +1,14 @@
+Not enough inputs to cascade
+    at 1,8	cascade_err.lgo
+Not enough inputs to cascade
+    at 2,13	cascade_err.lgo
+cascade doesn't like {} as input
+    at 3,1	cascade_err.lgo
+cascade doesn't like {} as input
+    at 4,1	cascade_err.lgo
+I don't know how to 1
+    at 5,1	cascade_err.lgo
+cascade doesn't like {} as input
+    at 6,1	cascade_err.lgo
+cascade doesn't like {} as input
+    at 7,2	cascade_err.lgo

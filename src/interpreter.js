@@ -236,10 +236,8 @@ export default {
                 throw logo.type.LogoException.INVALID_MACRO_RETURN.withParam([macroOutput, curToken], curSrcmap);
             }
 
-            logo.env.setProcName(curToken);
-            logo.env.setProcSrcmap(logo.type.SRCMAP_NULL);
-
-            return await logo.env.getPrimitive("run").apply(undefined, [macroOutput, true]);
+            return await logo.env.callProcAsyncHelper(curToken, logo.type.SRCMAP_NULL,
+                async () => await logo.env.getPrimitive("run").apply(undefined, [macroOutput, true]));
         }
 
         async function evxCallProcDefault(...callParams) {
@@ -262,16 +260,18 @@ export default {
             let callParams = await evxProcCallRequiredParam(evxContext, curToken, logo.env.getProcParsedFormal(curToken),
                 logo.env.getPrecedence(curToken), isInParen);
 
-            logo.env.setProcName(curToken);
-            logo.env.setProcSrcmap(curSrcmap);
-            evxContext.retVal = await logo.env.getCallTarget(curToken).apply(undefined, callParams);
-            if (!logo.env.isPrimitive(curToken)) {
-                logo.env.completeCallProc();
-            }
+            return await logo.env.callProcAsyncHelper(curToken, curSrcmap,
+                async () => {
+                    evxContext.retVal = await logo.env.getCallTarget(curToken).apply(undefined, callParams);
 
-            if (!macroExpand && logo.env.isMacro(curToken)) {
-                evxContext.retVal = await evxMacroOutput(evxContext.retVal, curToken, curSrcmap);
-            }
+                    if (!logo.env.isPrimitive(curToken)) {
+                        logo.env.completeCallProc();
+                    }
+
+                    if (!macroExpand && logo.env.isMacro(curToken)) {
+                        evxContext.retVal = await evxMacroOutput(evxContext.retVal, curToken, curSrcmap);
+                    }
+                });
         }
 
         async function evxCtrlInfixOperator(evxContext, nextOp, nextOpSrcmap, nextPrec) {

@@ -1,0 +1,35 @@
+to test2 :v
+output :v > 2
+end
+
+TO VOWELP :arg
+IF :arg="a [OUTPUT "true]
+IF :arg="e [OUTPUT "true]
+IF :arg="i [OUTPUT "true]
+IF :arg="o [OUTPUT "true]
+IF :arg="u [OUTPUT "true]
+OUTPUT "false
+END
+
+to fibonacci :n
+output cascade.2 :n [?1 + ?2] 1 [?1] 0
+end
+
+to piglatin :word
+output (cascade.2 [vowelp first ?] ~
+                [word bf ? first ?] ~
+                :word ~
+                [word ? "ay])
+end
+
+show (cascade.2 0 [] 1)
+show (cascade.2 ["true] [] 2)
+show (cascade.2 "test2 [? + 1] 1)
+show (cascade.2 2 [?+1] 1 [?+#])
+
+show (cascade.2 5 [lput # ?] [])
+show (cascade.2 [vowelp first ?] [bf ?] "spring)
+show (cascade.2 5 [# * ?] 1)
+
+show map "fibonacci (iseq 1 10)
+show map "piglatin [The quick fox jumps over the lazy dog]

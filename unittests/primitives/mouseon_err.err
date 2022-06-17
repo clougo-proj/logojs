@@ -21,14 +21,14 @@ mouseon doesn't like {} as input
 mouseon doesn't like {} as input
     at 12,1	mouseon_err.lgo
 I don't know how to on_mouse_move
-    at 14,1	mouseon_err.lgo
+    at 14,92	mouseon_err.lgo
 I don't know how to on_left_mouse_down
-    at 14,1	mouseon_err.lgo
+    at 14,10	mouseon_err.lgo
 I don't know how to on_left_mouse_up
-    at 14,1	mouseon_err.lgo
+    at 14,31	mouseon_err.lgo
 I don't know how to on_mouse_move
-    at 14,1	mouseon_err.lgo
+    at 14,92	mouseon_err.lgo
 I don't know how to on_right_mouse_down
-    at 14,48	mouseon_err.lgo
+    at 14,50	mouseon_err.lgo
 I don't know how to on_right_mouse_up
-    at 14,70	mouseon_err.lgo
+    at 14,72	mouseon_err.lgo
