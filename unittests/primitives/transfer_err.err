@@ -1,0 +1,16 @@
+Not enough inputs to transfer
+    at 1,9	transfer_err.lgo
+Not enough inputs to transfer
+    at 2,11	transfer_err.lgo
+I don't know how to 1
+    at 3,1	transfer_err.lgo
+transfer doesn't like {} as input
+    at 4,1	transfer_err.lgo
+? doesn't like 3 as input
+    [] at 5,14	transfer_err.lgo
+    at 5,1	transfer_err.lgo
+?rest doesn't like 1 as input
+    [] at 6,14	transfer_err.lgo
+    at 6,1	transfer_err.lgo
+Too much inside ()'s
+    at 7,25	transfer_err.lgo
