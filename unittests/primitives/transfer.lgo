@@ -1,0 +1,10 @@
+show transfer [] [?in] "
+show transfer [] [?in] []
+show transfer [] [?in] "123
+show transfer [# > 2] [?in] "123
+SHOW TRANSFER [] [IFELSE MEMBERP ?in ?out [?out] [LPUT ?in ?out]] [A B C B D E F B C G]
+SHOW TRANSFER [(count ?out) > 3] [IFELSE MEMBERP ?in ?out [?out] [LPUT ?in ?out]] [A B C B D E F B C G]
+show transfer [] [lput (word # ?in) ?out] "xyzabc
+show transfer [?in = "b] [lput (word # ?in) ?out] "xyzabc
+show transfer [] [list ?1 ?2] "abc
+show transfer [] [list ?1 ?2] [a b c]

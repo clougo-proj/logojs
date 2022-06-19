@@ -1,0 +1,7 @@
+transfer
+transfer 1
+transfer 1 [] "abc
+transfer {} [] "abc
+transfer [] [?3] "abc
+transfer [] [?rest] "abc
+(transfer [] [?in] "abc [])

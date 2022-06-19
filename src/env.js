@@ -429,6 +429,15 @@ export default {
         }
         env.getSlotIndex = getSlotIndex;
 
+        function getSlotMapValue(key) {
+            if (Object.hasOwn(_curSlot.map, key)) {
+                return _curSlot.map[key];
+            }
+
+            return logo.type.EMPTY_LIST;
+        }
+        env.getSlotMapValue = getSlotMapValue;
+
         function getSlotRestValue(slotNum) {
             logo.type.throwIf(_curSlot === undefined || slotNum > _curSlot.rest.length,
                 logo.type.LogoException.INVALID_INPUT, slotNum);
@@ -1325,11 +1334,12 @@ export default {
         }
         env.loadDefaultLogoModules = loadDefaultLogoModules;
 
-        function makeSlotObj(param, index, rest) {
+        function makeSlotObj(param, index, rest, map) {
             return {
                 "param": param,
                 "rest": rest,
-                "index": index
+                "index": index,
+                "map": map
             };
         }
         env.makeSlotObj = makeSlotObj;

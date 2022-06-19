@@ -1,0 +1,10 @@
+[]
+[]
+3
+2
+[A B C D E F G]
+[A B C D]
+[1x 2y 3z 4a 5b 6c]
+[1x 2y 3z 4a]
+[[[[] abc] bc] c]
+[[[[] [a b c]] [b c]] [c]]
