@@ -13,3 +13,5 @@ test_array :arr
 
 make "arr (array 10 -5)
 test_array :arr
+
+show count array "1e8

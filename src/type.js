@@ -13,9 +13,9 @@ export default {
 
         const CLASSNAME = logo.constants.CLASSNAME;
 
-
         const LIST_HEAD_SIZE = 2;
         const ARRAY_HEAD_SIZE = 2;
+        const MAX_ARRAY_INDEX = 100000000;
         const SRCMAP_NULL = 0;
         const LIST_ORIGIN = 1;
         const ARRAY_DEFAULT_ORIGIN = 1;
@@ -496,7 +496,12 @@ export default {
         type.arraySetItem = arraySetItem;
 
         function arrayItem(index, array) {
-            return array[index - arrayOrigin(array) + 2];
+            let ret = array[index - arrayOrigin(array) + 2];
+            if (ret === undefined) {
+                ret = null;
+            }
+
+            return ret;
         }
         type.arrayItem = arrayItem;
 
@@ -578,9 +583,10 @@ export default {
         type.makeLogoArray = makeLogoArray;
 
         function makeLogoArrayBySize(size, origin = ARRAY_DEFAULT_ORIGIN) {
-            let ret = makeObject(OBJTYPE.ARRAY, Array.apply(null, Array(size)).map(() => null));
-            ret.splice(1, 0, origin);
-            return ret;
+            let array = Array(size + ARRAY_HEAD_SIZE);
+            array[0] = OBJTYPE.ARRAY;
+            array[1] = origin;
+            return array;
         }
         type.makeLogoArrayBySize = makeLogoArrayBySize;
 
@@ -717,12 +723,12 @@ export default {
         type.validateInputCharacter = validateInputCharacter;
 
         function validateInputInteger(value) {
-            throwIf(!sys.isInteger(value), LogoException.INVALID_INPUT, value);
+            throwIf(!isLogoNumber(value) || !sys.isInteger(Number(value)), LogoException.INVALID_INPUT, value);
         }
         type.validateInputInteger = validateInputInteger;
 
         function validateInputNonNegInteger(value) {
-            throwIf(!isNonNegInteger(value), LogoException.INVALID_INPUT, value);
+            throwIf(!isLogoNumber(value) || !isNonNegInteger(Number(value)), LogoException.INVALID_INPUT, value);
         }
         type.validateInputNonNegInteger = validateInputNonNegInteger;
 
@@ -817,6 +823,12 @@ export default {
             throwIf(!isLogoArray(value), LogoException.INVALID_INPUT, value);
         }
         type.validateInputArray = validateInputArray;
+
+        function validateInputArraySize(value) {
+            throwIf(!isLogoNumber(value) || !sys.isInteger(Number(value)) || Number(value) > MAX_ARRAY_INDEX,
+                LogoException.INVALID_INPUT, value);
+        }
+        type.validateInputArraySize = validateInputArraySize;
 
         function validateInputByte(value) {
             throwIf(!isByteValue(value), LogoException.INVALID_INPUT, value);
@@ -1267,11 +1279,20 @@ export default {
                 return scalarToString(v);
             }
 
+            function arrayToString(array) {
+                let retArray = [];
+                for (let j = 0; j < array.length; j++) {
+                    retArray[j] = toStringHelper(array[j]);
+                }
+
+                return retArray.join(" ");
+            }
+
             function toStringHelper(v) {
-                return isLogoList(v) ? "[" +  unboxList(v).map(toStringHelper).join(" ") + "]" :
-                    isLogoArray(v) ? "{" +  unboxArray(v).map(toStringHelper).join(" ") + "}" :
+                return isLogoList(v) ? "[" +  arrayToString(unboxList(v)) + "]" :
+                    isLogoArray(v) ? "{" +  arrayToString(unboxArray(v)) + "}" :
                         isLogoPlist(v) ? toStringHelper(plistToList(v)) :
-                            v === null ? "[]" : scalarToString(v);
+                            (v === null || v === undefined) ? "[]" : scalarToString(v);
             }
 
             return (isLogoArray(v) || (outterBracket && isLogoList(v)) || isLogoPlist(v)) ? toStringHelper(v) :
