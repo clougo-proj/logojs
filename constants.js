@@ -48,6 +48,7 @@ export default {
         "CLOUGO": "clougo"
     },
     LOGO_EXCEPTIONS: {
+        STACK_OVERFLOW        : [2, "Stack overflow"],
         NO_OUTPUT             : [5, "{0} didn't output to {1}"],
         NOT_ENOUGH_INPUTS     : [6, "Not enough inputs to {0}"],
         INVALID_INPUT         : [7, "{0} doesn't like {1} as input"],

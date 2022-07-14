@@ -1110,15 +1110,36 @@ export default {
         }
         env.errorOnLogoException = errorOnLogoException;
 
+        function isStackOverflow(e) {
+            return e instanceof RangeError && e.message == "Maximum call stack size exceeded";
+        }
+
+        function errorOnStackOverflowException() {
+            logo.io.stderr(logo.type.LogoException.STACK_OVERFLOW.formatMessage());
+            let stackDump = stackToDump(_callStack.slice(-10).reverse());
+            if (stackDump) {
+                logo.io.stderr(stackDump);
+                logo.io.stderr("\t...");
+            }
+
+            stackDump = stackToDump(_callStack.slice(0, 10).reverse());
+            if (stackDump) {
+                logo.io.stderr(stackDump);
+            }
+        }
+
         async function catchLogoException(f) {
             try {
                 await f();
             } catch (e) {
-                if (!logo.type.LogoException.is(e)) {
-                    throw e;
-                } else {
+                if (logo.type.LogoException.is(e)) {
                     errorOnLogoException(e, false);
                     _abortExecution = true;
+                } else if (isStackOverflow(e)) {
+                    errorOnStackOverflowException();
+                    _abortExecution = true;
+                } else {
+                    throw e;
                 }
             }
         }
