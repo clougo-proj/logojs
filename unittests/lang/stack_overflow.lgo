@@ -1,0 +1,5 @@
+to test1 :l
+  test1 :l+1
+end
+
+test1 0
