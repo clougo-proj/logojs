@@ -35,3 +35,4 @@ stopOutputInd run exec
 macro run exec
 macro_err runl execl execl,+eagerJitInstrList
 macro_maybeoutput run exec
+stack_overflow exec
