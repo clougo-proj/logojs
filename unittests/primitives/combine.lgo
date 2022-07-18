@@ -1,0 +1,4 @@
+show combine 1 2
+show combine 1 [2]
+show combine [] [2]
+show combine {} [2]
