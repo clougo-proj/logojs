@@ -1,0 +1,10 @@
+Not enough inputs to combine
+    at 1,8	combine_err.lgo
+Not enough inputs to combine
+    at 2,10	combine_err.lgo
+combine doesn't like {} as input
+    at 3,1	combine_err.lgo
+combine doesn't like [] as input
+    at 4,1	combine_err.lgo
+combine doesn't like {} as input
+    at 5,1	combine_err.lgo
