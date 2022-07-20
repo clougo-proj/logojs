@@ -1,0 +1,2 @@
+show firsts [abc 123]
+show firsts []
