@@ -1,0 +1,10 @@
+Not enough inputs to firsts
+    at 1,7	firsts_err.lgo
+firsts doesn't like 0 as input
+    at 2,1	firsts_err.lgo
+firsts doesn't like {} as input
+    at 3,1	firsts_err.lgo
+firsts doesn't like [] as input
+    at 4,1	firsts_err.lgo
+Too much inside ()'s
+    at 5,12	firsts_err.lgo
