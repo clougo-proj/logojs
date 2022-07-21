@@ -1,0 +1,11 @@
+butfirsts
+butfirsts 0
+butfirsts {}
+butfirsts [[]]
+(butfirsts [] [])
+
+bfs
+bfs 0
+bfs {}
+bfs [[]]
+(bfs [] [])

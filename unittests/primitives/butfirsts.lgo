@@ -1,0 +1,4 @@
+show butfirsts [abc 123]
+show butfirsts []
+show bfs [abc 123]
+show bfs []
