@@ -1,0 +1,20 @@
+Not enough inputs to butfirsts
+    at 1,10	butfirsts_err.lgo
+butfirsts doesn't like 0 as input
+    at 2,1	butfirsts_err.lgo
+butfirsts doesn't like {} as input
+    at 3,1	butfirsts_err.lgo
+butfirsts doesn't like [] as input
+    at 4,1	butfirsts_err.lgo
+Too much inside ()'s
+    at 5,15	butfirsts_err.lgo
+Not enough inputs to bfs
+    at 7,4	butfirsts_err.lgo
+bfs doesn't like 0 as input
+    at 8,1	butfirsts_err.lgo
+bfs doesn't like {} as input
+    at 9,1	butfirsts_err.lgo
+bfs doesn't like [] as input
+    at 10,1	butfirsts_err.lgo
+Too much inside ()'s
+    at 11,9	butfirsts_err.lgo

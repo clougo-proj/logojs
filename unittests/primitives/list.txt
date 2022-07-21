@@ -182,3 +182,5 @@ combine exec run
 combine_err execl runl
 firsts exec run
 firsts_err execl runl
+butfirsts exec run
+butfirsts_err execl runl
