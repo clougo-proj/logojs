@@ -1259,10 +1259,6 @@ export default {
         type.listToWord = listToWord;
 
         function toString(v, outterBracket = false) {
-            if (isQuotedLogoWord(v)) {
-                return unquoteLogoWord(v);
-            }
-
             if (v === null) {
                 return outterBracket ? "[]" : "";
             }

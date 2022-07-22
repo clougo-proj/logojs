@@ -1,0 +1,9 @@
+show quoted 1
+show quoted 1.5
+show quoted 1.5e8
+show quoted 1.5e-8
+show quoted "abc
+show quoted [1 2 3]
+show quoted [abc def gh]
+show quoted {1 2 3}
+show quoted {abc def gh}
