@@ -1,0 +1,4 @@
+pick
+(pick 1 2)
+pick []
+pick {}

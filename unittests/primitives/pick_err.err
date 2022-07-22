@@ -1,0 +1,8 @@
+Not enough inputs to pick
+    at 1,5	pick_err.lgo
+Too much inside ()'s
+    at 2,9	pick_err.lgo
+pick doesn't like [] as input
+    at 3,1	pick_err.lgo
+pick doesn't like {} as input
+    at 4,1	pick_err.lgo

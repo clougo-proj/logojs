@@ -1,0 +1,11 @@
+show pick 1
+rerandom
+make "s "0123456789abcdefghijklmnopqrastuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+make "l map.se "first :s
+make "a listtoarray :l
+repeat 100[type pick :s]
+pr "
+repeat 100[type pick :l]
+pr "
+repeat 100[type pick :a]
+pr "

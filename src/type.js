@@ -760,7 +760,7 @@ export default {
         type.validateInputPosNumber = validateInputPosNumber;
 
         function validateInputNonEmptyWord(value) {
-            throwIf(!(isLogoWord(value) && value.length >= 1), LogoException.INVALID_INPUT, value);
+            throwIf(!(typeof value == "number" || (isLogoWord(value) && value.length > 0)), LogoException.INVALID_INPUT, value);
         }
         type.validateInputNonEmptyWord = validateInputNonEmptyWord;
 
@@ -785,7 +785,7 @@ export default {
         type.validateInputNonEmptyList = validateInputNonEmptyList;
 
         function validateInputNonEmptyWordOrList(value) {
-            throwIf(!(isLogoWord(value) && length(value) > 0) && !(isLogoList(value) && length(value) > 0),
+            throwIf(!(typeof value == "number" || (isLogoWord(value) && value.length > 0)) && !(isLogoList(value) && length(value) > 0),
                 LogoException.INVALID_INPUT, value);
         }
         type.validateInputNonEmptyWordOrList = validateInputNonEmptyWordOrList;

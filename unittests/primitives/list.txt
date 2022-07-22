@@ -184,3 +184,5 @@ firsts exec run
 firsts_err execl runl
 butfirsts exec run
 butfirsts_err execl runl
+pick exec run
+pick_err execl runl
