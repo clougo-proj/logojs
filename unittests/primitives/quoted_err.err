@@ -1,0 +1,4 @@
+Not enough inputs to quoted
+    at 1,7	quoted_err.lgo
+Too much inside ()'s
+    at 2,11	quoted_err.lgo

@@ -186,3 +186,5 @@ butfirsts exec run
 butfirsts_err execl runl
 pick exec run
 pick_err execl runl
+quoted exec run
+quoted_err execl runl
