@@ -381,6 +381,10 @@ export default {
         }
         type.isEmptyList = isEmptyList;
 
+        function isEmptyArray(value) {
+            return isLogoArray(value) && arrayLength(value) === 0;
+        }
+
         function getRGB(color) {
             if (isPaletteIndex(color)) {
                 return getPaletteRGB(color);
@@ -1259,6 +1263,8 @@ export default {
         type.listToWord = listToWord;
 
         function toString(v, outterBracket = false) {
+            let cyclicSet = new Set();
+
             if (v === null) {
                 return outterBracket ? "[]" : "";
             }
@@ -1275,24 +1281,47 @@ export default {
                 return scalarToString(v);
             }
 
-            function arrayToString(array) {
-                let retArray = [];
-                for (let j = 0; j < array.length; j++) {
-                    retArray[j] = toStringHelper(array[j]);
+            return (!outterBracket && isLogoList(v)) ? unboxedListToString(unboxList(v)) : toStringHelper(v);
+
+            function isCompoundObj(v) {
+                return isLogoList(v) || isLogoArray(v) || isLogoPlist(v);
+            }
+
+            function unboxedListToString(list) {
+                let retList = [];
+                for (let j = 0; j < list.length; j++) {
+                    retList[j] = toStringHelper(list[j]);
                 }
 
-                return retArray.join(" ");
+                return retList.join(" ");
             }
 
             function toStringHelper(v) {
-                return isLogoList(v) ? "[" +  arrayToString(unboxList(v)) + "]" :
-                    isLogoArray(v) ? "{" +  arrayToString(unboxArray(v)) + "}" :
-                        isLogoPlist(v) ? toStringHelper(plistToList(v)) :
-                            (v === null || v === undefined) ? "[]" : scalarToString(v);
-            }
+                if (!isCompoundObj(v)) {
+                    return (v === null || v === undefined) ? "[]" : scalarToString(v);
+                }
 
-            return (isLogoArray(v) || (outterBracket && isLogoList(v)) || isLogoPlist(v)) ? toStringHelper(v) :
-                unboxList(v).map(toStringHelper).join(" ");
+                if (isEmptyList(v)) {
+                    return "[]";
+                }
+
+                if (isEmptyArray(v)) {
+                    return "{}";
+                }
+
+                if (cyclicSet.has(v)) {
+                    return isLogoList(v) || isLogoPlist(v) ? "[ ... ]" : "{ ... }";
+                }
+
+                cyclicSet.add(v);
+
+                let retVal = isLogoList(v) ? "[" +  unboxedListToString(unboxList(v)) + "]" :
+                    isLogoArray(v) ? "{" +  unboxedListToString(unboxArray(v)) + "}" : toStringHelper(plistToList(v));
+
+                cyclicSet.delete(v);
+
+                return retVal;
+            }
         }
         type.toString = toString;
 

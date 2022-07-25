@@ -1,0 +1,10 @@
+make "a array 2
+make "b list :a {}
+setitem 1 :a :b
+show :a
+show :b
+pr :a
+pr :b
+pr "
+make "c [1 2]
+show list :c :c
