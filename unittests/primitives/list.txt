@@ -188,3 +188,4 @@ pick exec run
 pick_err execl runl
 quoted exec run
 quoted_err execl runl
+setitem_err execl runl

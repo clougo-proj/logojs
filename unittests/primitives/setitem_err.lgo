@@ -1,0 +1,21 @@
+make "a array 1
+
+; Not enough inputs
+setitem
+setitem 1
+setitem 1 :a
+
+; invalid inputs
+setitem 1 [] 1
+setitem 1 "word 1
+setitem 0.1 :a 1
+setitem -1 :a 1
+
+make "b array 1
+make "c listtoplist (list "key :a)
+setitem 1 :b :a
+
+; circular reference
+setitem 1 :a (list :a)
+setitem 1 :a :b
+setitem 1 :a :c

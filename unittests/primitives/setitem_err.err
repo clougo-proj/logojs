@@ -1,0 +1,20 @@
+Not enough inputs to setitem
+    at 4,8	setitem_err.lgo
+Not enough inputs to setitem
+    at 5,10	setitem_err.lgo
+Not enough inputs to setitem
+    at 6,13	setitem_err.lgo
+setitem doesn't like [] as input
+    at 9,1	setitem_err.lgo
+setitem doesn't like word as input
+    at 10,1	setitem_err.lgo
+setitem doesn't like 0.1 as input
+    at 11,1	setitem_err.lgo
+setitem doesn't like -1 as input
+    at 12,1	setitem_err.lgo
+setitem doesn't like [{[]}] as input
+    at 19,1	setitem_err.lgo
+setitem doesn't like {{[]}} as input
+    at 20,1	setitem_err.lgo
+setitem doesn't like [key {[]}] as input
+    at 21,1	setitem_err.lgo

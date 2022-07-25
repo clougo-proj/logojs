@@ -1,6 +1,6 @@
 make "a array 2
 make "b list :a {}
-setitem 1 :a :b
+.setitem 1 :a :b
 show :a
 show :b
 pr :a
