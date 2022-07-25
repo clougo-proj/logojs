@@ -1262,6 +1262,31 @@ export default {
         }
         type.listToWord = listToWord;
 
+        function isReference(v) {
+            return isLogoList(v) || isLogoArray(v) || isLogoPlist(v);
+        }
+
+        function contains(item, obj) {
+            if (typeof item != "object" || !isReference(item)) {
+                return false;
+            }
+
+            if (item === obj) {
+                return true;
+            }
+
+            if (isLogoList(item)) {
+                return unboxList(item).reduce((acc, elem) => acc || contains(elem, obj), false);
+            }
+
+            if (isLogoArray(item)) {
+                return unboxArray(item).reduce((acc, elem) => acc || contains(elem, obj), false);
+            }
+
+            return contains(plistToList(item), obj);
+        }
+        type.contains = contains;
+
         function toString(v, outterBracket = false) {
             let cyclicSet = new Set();
 
@@ -1283,10 +1308,6 @@ export default {
 
             return (!outterBracket && isLogoList(v)) ? unboxedListToString(unboxList(v)) : toStringHelper(v);
 
-            function isCompoundObj(v) {
-                return isLogoList(v) || isLogoArray(v) || isLogoPlist(v);
-            }
-
             function unboxedListToString(list) {
                 let retList = [];
                 for (let j = 0; j < list.length; j++) {
@@ -1297,7 +1318,7 @@ export default {
             }
 
             function toStringHelper(v) {
-                if (!isCompoundObj(v)) {
+                if (!isReference(v)) {
                     return (v === null || v === undefined) ? "[]" : scalarToString(v);
                 }
 
