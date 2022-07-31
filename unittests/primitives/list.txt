@@ -189,3 +189,5 @@ pick_err execl runl
 quoted exec run
 quoted_err execl runl
 setitem_err execl runl
+dsetfirst exec run
+dsetfirst_err execl runl

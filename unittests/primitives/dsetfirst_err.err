@@ -1,0 +1,16 @@
+Not enough inputs to .setfirst
+    at 1,10	dsetfirst_err.lgo
+Not enough inputs to .setfirst
+    at 2,13	dsetfirst_err.lgo
+Not enough inputs to .setfirst
+    at 3,14	dsetfirst_err.lgo
+Not enough inputs to .setfirst
+    at 4,14	dsetfirst_err.lgo
+.setfirst doesn't like a as input
+    at 5,1	dsetfirst_err.lgo
+.setfirst doesn't like [] as input
+    at 6,1	dsetfirst_err.lgo
+.setfirst doesn't like {1} as input
+    at 7,1	dsetfirst_err.lgo
+Too much inside ()'s
+    at 8,18	dsetfirst_err.lgo

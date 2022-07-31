@@ -1,0 +1,8 @@
+.setfirst
+.setfirst "a
+.setfirst [1]
+.setfirst {1}
+.setfirst "a 1
+.setfirst [] 1
+.setfirst {1} 1
+(.setfirst [1] 1 1)

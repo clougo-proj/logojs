@@ -1,0 +1,7 @@
+make "a [a b c]
+make "b :a
+show :a
+show :b
+.setfirst :a "x
+show :a
+show :b
