@@ -1,0 +1,8 @@
+.setbf
+.setbf "a
+.setbf [1]
+.setbf {1}
+.setbf "a 1
+.setbf [] 1
+.setbf {1} 1
+(.setbf [1] [1] [2])

@@ -1,0 +1,7 @@
+MAKE "x [1 2 3]
+make "y :x
+show :x
+show :y
+.SETBF :x [a b]
+SHOW :x
+show :y
