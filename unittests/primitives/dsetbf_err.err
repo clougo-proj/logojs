@@ -1,0 +1,16 @@
+Not enough inputs to .setbf
+    at 1,7	dsetbf_err.lgo
+Not enough inputs to .setbf
+    at 2,10	dsetbf_err.lgo
+Not enough inputs to .setbf
+    at 3,11	dsetbf_err.lgo
+Not enough inputs to .setbf
+    at 4,11	dsetbf_err.lgo
+.setbf doesn't like a as input
+    at 5,1	dsetbf_err.lgo
+.setbf doesn't like [] as input
+    at 6,1	dsetbf_err.lgo
+.setbf doesn't like {1} as input
+    at 7,1	dsetbf_err.lgo
+Too much inside ()'s
+    at 8,17	dsetbf_err.lgo

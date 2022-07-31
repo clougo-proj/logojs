@@ -444,6 +444,11 @@ export default {
         }
         type.listIndexWithinRange = listIndexWithinRange;
 
+        function listSplice(index, list, value) {
+            Array.prototype.splice.apply(list, [index + LIST_HEAD_SIZE - LIST_ORIGIN + 1, list.length - LIST_HEAD_SIZE].concat(value));
+        }
+        type.listSplice = listSplice;
+
         function listSetItem(index, list, val) {
             list[index + LIST_HEAD_SIZE - LIST_ORIGIN] = val;
         }
