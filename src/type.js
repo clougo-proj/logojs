@@ -23,6 +23,7 @@ export default {
         const CLOSE_PAREN = ")";
         const LAMBDA_EXPR = "[]";
         const INDEX_NOT_FOUND = -1;
+        const MIN_FLOAT_NUMBER = 2e-15;
 
         type.LIST_HEAD_SIZE = LIST_HEAD_SIZE;
         type.ARRAY_HEAD_SIZE = ARRAY_HEAD_SIZE;
@@ -1224,6 +1225,10 @@ export default {
         type.equal = equal;
 
         function numberToString(num) {
+            if (Math.abs(num) < MIN_FLOAT_NUMBER) {
+                num = 0;
+            }
+
             const digits = 15;
             const errDigits = 2;
             const margin = 3;
@@ -1234,6 +1239,7 @@ export default {
             }
 
             let approx = (+(num.toPrecision(digits - errDigits))).toString();
+
             if (approx.length + errDigits + margin < actual.length) {
                 return approx;
             }

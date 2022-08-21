@@ -1,0 +1,28 @@
+Not enough inputs to radsin
+    at 1,2	radsincos_err.lgo
+Too much inside ()'s
+    at 2,11	radsincos_err.lgo
+radsin doesn't like [] as input
+    at 3,1	radsincos_err.lgo
+radsin doesn't like {} as input
+    at 4,1	radsincos_err.lgo
+radsin doesn't like abc as input
+    at 5,1	radsincos_err.lgo
+radsin doesn't like false as input
+    at 6,1	radsincos_err.lgo
+radsin doesn't like true as input
+    at 7,1	radsincos_err.lgo
+Not enough inputs to radcos
+    at 9,2	radsincos_err.lgo
+Too much inside ()'s
+    at 10,11	radsincos_err.lgo
+radcos doesn't like [] as input
+    at 11,1	radsincos_err.lgo
+radcos doesn't like {} as input
+    at 12,1	radsincos_err.lgo
+radcos doesn't like abc as input
+    at 13,1	radsincos_err.lgo
+radcos doesn't like false as input
+    at 14,1	radsincos_err.lgo
+radcos doesn't like true as input
+    at 15,1	radsincos_err.lgo
