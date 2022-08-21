@@ -1,0 +1,9 @@
+pr "radsin
+for[n -12 12][
+  show radsin :n * pi / 6
+]
+
+pr "\nradcos
+for[n -12 12][
+  show radcos :n * pi / 6
+]

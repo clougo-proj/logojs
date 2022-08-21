@@ -1,0 +1,15 @@
+(radsin)
+(radsin 0 0)
+radsin []
+radsin {}
+radsin "abc
+radsin not "true
+radsin not "false
+
+(radcos)
+(radcos 0 0)
+radcos []
+radcos {}
+radcos "abc
+radcos not "true
+radcos not "false

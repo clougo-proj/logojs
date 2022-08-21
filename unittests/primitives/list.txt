@@ -74,6 +74,8 @@ char run exec
 char_err runl execl
 sincos run exec
 sincos_err runl execl
+radsincos run exec
+radsincos_err runl execl
 sign runl execl
 memberp runl execl
 member exec run
