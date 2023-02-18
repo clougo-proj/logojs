@@ -1,0 +1,12 @@
+show radarctan 0
+show radarctan 1
+show radarctan "0.5
+show radarctan "2
+show (radarctan 1 2)
+show (radarctan 2 "2)
+show (radarctan "0 2)
+show (radarctan 0 "-2)
+show (radarctan "0 "-0.1)
+show (radarctan 1 0)
+show (radarctan -1 0)
+show 2*(RADARCTAN 0 1)

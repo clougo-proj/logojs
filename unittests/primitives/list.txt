@@ -78,6 +78,8 @@ radsincos run exec
 radsincos_err runl execl
 arctan run exec
 arctan_err runl execl
+radarctan run exec
+radarctan_err runl execl
 sign runl execl
 memberp runl execl
 member exec run

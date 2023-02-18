@@ -4,4 +4,9 @@ arctan []
 arctan {}
 arctan 1=1
 arctan 1=2
+(arctan 1 "abc)
+(arctan 1 [])
+(arctan 1 {})
+(arctan 1 1=1)
+(arctan 1 1=2)
 (arctan 1 1 1)
