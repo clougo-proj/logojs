@@ -1,0 +1,11 @@
+show arctan 0
+show arctan 1
+show arctan 0.5
+show arctan 2
+show (arctan 1 2)
+show (arctan 2 2)
+show (arctan 0 2)
+show (arctan 0 -2)
+show (arctan 0 -0.1)
+show (arctan 1 0)
+show (arctan -1 0)
