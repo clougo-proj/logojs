@@ -1,0 +1,12 @@
+radarctan
+radarctan "abc
+radarctan []
+radarctan {}
+radarctan 1=1
+radarctan 1=2
+(radarctan 1 "abc)
+(radarctan 1 [])
+(radarctan 1 {})
+(radarctan 1 1=1)
+(radarctan 1 1=2)
+(radarctan 1 1 1)

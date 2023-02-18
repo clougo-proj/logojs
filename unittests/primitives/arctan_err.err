@@ -10,5 +10,15 @@ arctan doesn't like true as input
     at 5,1	arctan_err.lgo
 arctan doesn't like false as input
     at 6,1	arctan_err.lgo
+arctan doesn't like abc as input
+    at 7,2	arctan_err.lgo
+arctan doesn't like [] as input
+    at 8,2	arctan_err.lgo
+arctan doesn't like {} as input
+    at 9,2	arctan_err.lgo
+arctan doesn't like true as input
+    at 10,2	arctan_err.lgo
+arctan doesn't like false as input
+    at 11,2	arctan_err.lgo
 Too much inside ()'s
-    at 7,13	arctan_err.lgo
+    at 12,13	arctan_err.lgo
