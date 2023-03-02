@@ -1,0 +1,11 @@
+show bitand 255 10
+show bitand 511 10
+show bitand 65535 10
+show bitand 65534 10
+show bitand 65533 10
+show bitand 0 10
+show bitand 2 10
+show bitand -1 10
+show bitand -2 10
+show bitand -3 10
+show (bitand -1 2 3)
