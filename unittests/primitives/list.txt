@@ -45,6 +45,8 @@ rerandom run exec
 rerandom_err execl runl
 and run exec
 and_err runl execl
+bitand run exec
+bitand_err runl execl
 or run exec
 or_err runl execl
 not run exec
