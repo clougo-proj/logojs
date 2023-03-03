@@ -1,0 +1,34 @@
+Not enough inputs to bitxor
+    at 1,7	bitxor_err.lgo
+Not enough inputs to bitxor
+    at 2,9	bitxor_err.lgo
+bitxor doesn't like abc as input
+    at 4,1	bitxor_err.lgo
+bitxor doesn't like true as input
+    at 5,1	bitxor_err.lgo
+bitxor doesn't like false as input
+    at 6,1	bitxor_err.lgo
+bitxor doesn't like [] as input
+    at 7,1	bitxor_err.lgo
+bitxor doesn't like {} as input
+    at 8,1	bitxor_err.lgo
+bitxor doesn't like abc as input
+    at 10,1	bitxor_err.lgo
+bitxor doesn't like true as input
+    at 11,1	bitxor_err.lgo
+bitxor doesn't like false as input
+    at 12,1	bitxor_err.lgo
+bitxor doesn't like [] as input
+    at 13,1	bitxor_err.lgo
+bitxor doesn't like {} as input
+    at 14,1	bitxor_err.lgo
+bitxor doesn't like abc as input
+    at 16,2	bitxor_err.lgo
+bitxor doesn't like true as input
+    at 17,2	bitxor_err.lgo
+bitxor doesn't like false as input
+    at 18,2	bitxor_err.lgo
+bitxor doesn't like [] as input
+    at 19,2	bitxor_err.lgo
+bitxor doesn't like {} as input
+    at 20,2	bitxor_err.lgo
