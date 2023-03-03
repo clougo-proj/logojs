@@ -47,6 +47,8 @@ and run exec
 and_err runl execl
 bitand run exec
 bitand_err runl execl
+bitxor run exec
+bitxor_err runl execl
 or run exec
 or_err runl execl
 not run exec
