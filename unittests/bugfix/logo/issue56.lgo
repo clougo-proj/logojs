@@ -1,0 +1,2 @@
+sum 1 2"abc
+for [i" 0][pr :i]

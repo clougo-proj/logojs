@@ -486,7 +486,7 @@ export default {
 
             if (forBeginStmt == CODEGEN_CONSTANTS.NOP || forEndStmt == CODEGEN_CONSTANTS.NOP) {
                 return Code.stmt(genThrowException(logo.type.LogoException.INVALID_INPUT,
-                    srcmap, quoteToken("for"), quoteToken(logo.type.toString(token, true))), ";\n");
+                    srcmap, quoteToken("for"), quoteToken(escapeProcName(logo.type.toString(token, true)))), ";\n");
             }
 
             if (!logo.type.isLogoList(evxContext.peekNextToken())) {
@@ -652,7 +652,7 @@ export default {
         }
 
         function escapeProcName(token) {
-            return token.replace(/"/g, "\\\"");
+            return token === undefined ? undefined : token.replace(/"/g, "\\\"");
         }
 
         function genPostfixProcCall(curToken, srcmap, param) {
@@ -829,7 +829,7 @@ export default {
 
         function genThrowNoOutput(evxContext, procName) {
             return genThrowException(logo.type.LogoException.NO_OUTPUT, evxContext.getSrcmap(),
-                quoteToken(evxContext.proc), quoteToken(procName));
+                quoteToken(escapeProcName(evxContext.proc)), quoteToken(escapeProcName(procName)));
         }
 
         function genProcInput(evxContext, precedence, isInParen, procName, throwsNotEnoughInputs = true) {
