@@ -2,10 +2,10 @@ show bitxor 255 10
 show bitxor 511 10
 show bitxor 65535 10
 show bitxor 65534 10
-show bitxor 65533 10
+show bitxor "65533 10
 show bitxor 0 10
-show bitxor 2 10
+show bitxor 2 "10
 show bitxor -1 10
-show bitxor -2 10
+show bitxor "-2 10
 show bitxor -3 10
-show (bitxor -1 2 3)
+show (bitxor -1 2 "3)

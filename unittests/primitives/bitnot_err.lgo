@@ -1,0 +1,7 @@
+bitnot
+bitnot "abc
+bitnot 1=1
+bitnot 1=2
+bitnot []
+bitnot {}
+(bitnot 1 2)

@@ -53,6 +53,8 @@ or run exec
 or_err runl execl
 not run exec
 not_err runl execl
+bitnot run exec
+bitnot_err runl execl
 abs run exec
 abs_err runl execl
 power run exec
