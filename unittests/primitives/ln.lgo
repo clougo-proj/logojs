@@ -1,0 +1,14 @@
+pr ln 0.001
+pr ln "0.001
+pr ln 0.1
+pr ln 1
+pr ln 2
+pr ln 1000
+pr ln exp 1
+pr ln exp 10
+pr ln exp 100
+pr ln exp 1.1
+pr ln exp -1
+pr ln exp -10
+pr ln exp -100
+pr ln exp -1.1

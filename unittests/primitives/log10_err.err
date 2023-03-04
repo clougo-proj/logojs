@@ -1,0 +1,18 @@
+Not enough inputs to log10
+    at 1,6	log10_err.lgo
+Too much inside ()'s
+    at 2,10	log10_err.lgo
+log10 doesn't like -1 as input
+    at 3,1	log10_err.lgo
+log10 doesn't like -1 as input
+    at 4,1	log10_err.lgo
+log10 doesn't like abc as input
+    at 5,1	log10_err.lgo
+log10 doesn't like true as input
+    at 6,1	log10_err.lgo
+log10 doesn't like false as input
+    at 7,1	log10_err.lgo
+log10 doesn't like [] as input
+    at 8,1	log10_err.lgo
+log10 doesn't like {} as input
+    at 9,1	log10_err.lgo

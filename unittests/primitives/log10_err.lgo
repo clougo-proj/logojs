@@ -1,0 +1,9 @@
+log10
+(log10 1 2)
+log10 -1
+log10 "-1
+log10 "abc
+log10 1=1
+log10 1=2
+log10 []
+log10 {}
