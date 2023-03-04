@@ -1,0 +1,18 @@
+show lshift
+show lshift 1
+
+show lshift 1.1 2
+show lshift "abc 1
+show lshift [] 1
+show lshift {} 1
+show lshift 1=1 1
+show lshift 1=2 1
+
+show lshift 1 1.1
+show lshift 1 "abc
+show lshift 1 []
+show lshift 1 {}
+show lshift 1 1=1
+show lshift 1 1=2
+
+show (lshift 1 10 2)
