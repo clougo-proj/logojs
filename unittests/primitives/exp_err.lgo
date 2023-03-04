@@ -1,0 +1,7 @@
+exp
+(exp 1 2)
+exp "abc
+exp 1=1
+exp 1=2
+exp []
+exp {}

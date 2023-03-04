@@ -66,6 +66,8 @@ abs run exec
 abs_err runl execl
 power run exec
 power_err runl execl
+exp run exec
+exp_err runl execl
 equalp run exec
 notequalp run exec
 wordp run exec
