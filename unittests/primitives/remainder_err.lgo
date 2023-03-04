@@ -1,0 +1,16 @@
+remainder
+remainder 1
+remainder 1 0
+(remainder 1 2 3)
+
+remainder 1=1 2
+remainder 1=2 2
+remainder "abc 2
+remainder [] 2
+remainder {} 2
+
+remainder 1 1=1
+remainder 1 1=2
+remainder 1 "abc
+remainder 1 []
+remainder 1 {}

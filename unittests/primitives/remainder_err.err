@@ -1,0 +1,28 @@
+Not enough inputs to remainder
+    at 1,10	remainder_err.lgo
+Not enough inputs to remainder
+    at 2,12	remainder_err.lgo
+remainder doesn't like 0 as input
+    at 3,1	remainder_err.lgo
+Too much inside ()'s
+    at 4,16	remainder_err.lgo
+remainder doesn't like true as input
+    at 6,1	remainder_err.lgo
+remainder doesn't like false as input
+    at 7,1	remainder_err.lgo
+remainder doesn't like abc as input
+    at 8,1	remainder_err.lgo
+remainder doesn't like [] as input
+    at 9,1	remainder_err.lgo
+remainder doesn't like {} as input
+    at 10,1	remainder_err.lgo
+remainder doesn't like true as input
+    at 12,1	remainder_err.lgo
+remainder doesn't like false as input
+    at 13,1	remainder_err.lgo
+remainder doesn't like abc as input
+    at 14,1	remainder_err.lgo
+remainder doesn't like [] as input
+    at 15,1	remainder_err.lgo
+remainder doesn't like {} as input
+    at 16,1	remainder_err.lgo

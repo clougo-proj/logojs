@@ -759,6 +759,11 @@ export default {
         }
         type.validateNumber = validateNumber;
 
+        function validateInputNonZeroNumber(value) {
+            throwIf(!(isLogoNumber(value) && value != 0), LogoException.INVALID_INPUT, value);
+        }
+        type.validateInputNonZeroNumber = validateInputNonZeroNumber;
+
         function validateInputNonNegNumber(value) {
             throwIf(!(isLogoNumber(value) && value >= 0), LogoException.INVALID_INPUT, value);
         }
