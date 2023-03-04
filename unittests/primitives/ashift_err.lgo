@@ -1,0 +1,18 @@
+show ashift
+show ashift 1
+
+show ashift 1.1 2
+show ashift "abc 1
+show ashift [] 1
+show ashift {} 1
+show ashift 1=1 1
+show ashift 1=2 1
+
+show ashift 1 1.1
+show ashift 1 "abc
+show ashift 1 []
+show ashift 1 {}
+show ashift 1 1=1
+show ashift 1 1=2
+
+show (ashift 1 10 2)
