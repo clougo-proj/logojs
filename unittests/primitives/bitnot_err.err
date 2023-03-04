@@ -1,14 +1,16 @@
 Not enough inputs to bitnot
     at 1,7	bitnot_err.lgo
-bitnot doesn't like abc as input
+bitnot doesn't like 1.1 as input
     at 2,1	bitnot_err.lgo
-bitnot doesn't like true as input
+bitnot doesn't like abc as input
     at 3,1	bitnot_err.lgo
-bitnot doesn't like false as input
+bitnot doesn't like true as input
     at 4,1	bitnot_err.lgo
-bitnot doesn't like [] as input
+bitnot doesn't like false as input
     at 5,1	bitnot_err.lgo
-bitnot doesn't like {} as input
+bitnot doesn't like [] as input
     at 6,1	bitnot_err.lgo
+bitnot doesn't like {} as input
+    at 7,1	bitnot_err.lgo
 Too much inside ()'s
-    at 7,11	bitnot_err.lgo
+    at 8,11	bitnot_err.lgo

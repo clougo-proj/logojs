@@ -1,18 +1,21 @@
 bitand
 bitand 1
 
+bitand 1.1 1
 bitand "abc 1
 bitand 1=1 1
 bitand 1=2 1
 bitand [] 1
 bitand {} 1
 
+bitand 1 1.1
 bitand 1 "abc
 bitand 1 1=1
 bitand 1 1=2
 bitand 1 []
 bitand 1 {}
 
+(bitand 1 2 1.1)
 (bitand 1 2 "abc)
 (bitand 1 2 1=1)
 (bitand 1 2 1=2)

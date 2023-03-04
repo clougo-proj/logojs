@@ -1,18 +1,21 @@
 bitxor
 bitxor 1
 
+bitxor 1.1 1
 bitxor "abc 1
 bitxor 1=1 1
 bitxor 1=2 1
 bitxor [] 1
 bitxor {} 1
 
+bitxor 1 1.1
 bitxor 1 "abc
 bitxor 1 1=1
 bitxor 1 1=2
 bitxor 1 []
 bitxor 1 {}
 
+(bitxor 1 2 1.1)
 (bitxor 1 2 "abc)
 (bitxor 1 2 1=1)
 (bitxor 1 2 1=2)
