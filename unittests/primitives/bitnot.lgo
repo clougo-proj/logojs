@@ -1,0 +1,10 @@
+show bitnot 255
+show bitnot 511
+show bitnot 65535
+show bitnot "65534
+show bitnot 65533
+show bitnot 0
+show bitnot 2
+show bitnot -1
+show bitnot "-2
+show bitnot -3
