@@ -24,6 +24,8 @@ last run exec
 last_err runl execl
 remainder run exec
 remainder_err runl execl
+modulo run exec
+modulo_err runl execl
 emptyp run exec
 butfirst run exec
 butfirst_err runl execl
