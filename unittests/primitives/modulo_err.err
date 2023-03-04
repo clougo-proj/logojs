@@ -1,0 +1,28 @@
+Not enough inputs to modulo
+    at 1,7	modulo_err.lgo
+Not enough inputs to modulo
+    at 2,9	modulo_err.lgo
+modulo doesn't like 0 as input
+    at 3,1	modulo_err.lgo
+Too much inside ()'s
+    at 4,13	modulo_err.lgo
+modulo doesn't like true as input
+    at 6,1	modulo_err.lgo
+modulo doesn't like false as input
+    at 7,1	modulo_err.lgo
+modulo doesn't like abc as input
+    at 8,1	modulo_err.lgo
+modulo doesn't like [] as input
+    at 9,1	modulo_err.lgo
+modulo doesn't like {} as input
+    at 10,1	modulo_err.lgo
+modulo doesn't like true as input
+    at 12,1	modulo_err.lgo
+modulo doesn't like false as input
+    at 13,1	modulo_err.lgo
+modulo doesn't like abc as input
+    at 14,1	modulo_err.lgo
+modulo doesn't like [] as input
+    at 15,1	modulo_err.lgo
+modulo doesn't like {} as input
+    at 16,1	modulo_err.lgo
