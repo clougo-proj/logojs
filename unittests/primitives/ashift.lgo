@@ -3,5 +3,6 @@ show ashift 1 10
 show ashift -1 10
 show ashift "-1 -10
 show ashift -4 "-2
+show ashift 9 -2
 show ashift -1 0
 show ashift 1 0
