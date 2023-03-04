@@ -2,33 +2,39 @@ Not enough inputs to bitand
     at 1,7	bitand_err.lgo
 Not enough inputs to bitand
     at 2,9	bitand_err.lgo
-bitand doesn't like abc as input
+bitand doesn't like 1.1 as input
     at 4,1	bitand_err.lgo
-bitand doesn't like true as input
+bitand doesn't like abc as input
     at 5,1	bitand_err.lgo
-bitand doesn't like false as input
+bitand doesn't like true as input
     at 6,1	bitand_err.lgo
-bitand doesn't like [] as input
+bitand doesn't like false as input
     at 7,1	bitand_err.lgo
-bitand doesn't like {} as input
+bitand doesn't like [] as input
     at 8,1	bitand_err.lgo
-bitand doesn't like abc as input
-    at 10,1	bitand_err.lgo
-bitand doesn't like true as input
+bitand doesn't like {} as input
+    at 9,1	bitand_err.lgo
+bitand doesn't like 1.1 as input
     at 11,1	bitand_err.lgo
-bitand doesn't like false as input
-    at 12,1	bitand_err.lgo
-bitand doesn't like [] as input
-    at 13,1	bitand_err.lgo
-bitand doesn't like {} as input
-    at 14,1	bitand_err.lgo
 bitand doesn't like abc as input
-    at 16,2	bitand_err.lgo
+    at 12,1	bitand_err.lgo
 bitand doesn't like true as input
-    at 17,2	bitand_err.lgo
+    at 13,1	bitand_err.lgo
 bitand doesn't like false as input
-    at 18,2	bitand_err.lgo
+    at 14,1	bitand_err.lgo
 bitand doesn't like [] as input
-    at 19,2	bitand_err.lgo
+    at 15,1	bitand_err.lgo
 bitand doesn't like {} as input
+    at 16,1	bitand_err.lgo
+bitand doesn't like 1.1 as input
+    at 18,2	bitand_err.lgo
+bitand doesn't like abc as input
+    at 19,2	bitand_err.lgo
+bitand doesn't like true as input
     at 20,2	bitand_err.lgo
+bitand doesn't like false as input
+    at 21,2	bitand_err.lgo
+bitand doesn't like [] as input
+    at 22,2	bitand_err.lgo
+bitand doesn't like {} as input
+    at 23,2	bitand_err.lgo
