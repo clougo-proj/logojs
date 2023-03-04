@@ -57,6 +57,8 @@ bitnot run exec
 bitnot_err runl execl
 ashift run exec
 ashift_err runl execl
+lshift run exec
+lshift_err runl execl
 abs run exec
 abs_err runl execl
 power run exec

@@ -1,0 +1,30 @@
+Not enough inputs to lshift
+    at 1,12	lshift_err.lgo
+Not enough inputs to lshift
+    at 2,14	lshift_err.lgo
+lshift doesn't like 1.1 as input
+    at 4,6	lshift_err.lgo
+lshift doesn't like abc as input
+    at 5,6	lshift_err.lgo
+lshift doesn't like [] as input
+    at 6,6	lshift_err.lgo
+lshift doesn't like {} as input
+    at 7,6	lshift_err.lgo
+lshift doesn't like true as input
+    at 8,6	lshift_err.lgo
+lshift doesn't like false as input
+    at 9,6	lshift_err.lgo
+lshift doesn't like 1.1 as input
+    at 11,6	lshift_err.lgo
+lshift doesn't like abc as input
+    at 12,6	lshift_err.lgo
+lshift doesn't like [] as input
+    at 13,6	lshift_err.lgo
+lshift doesn't like {} as input
+    at 14,6	lshift_err.lgo
+lshift doesn't like true as input
+    at 15,6	lshift_err.lgo
+lshift doesn't like false as input
+    at 16,6	lshift_err.lgo
+Too much inside ()'s
+    at 18,19	lshift_err.lgo
