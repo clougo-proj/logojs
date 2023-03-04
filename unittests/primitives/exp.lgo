@@ -1,0 +1,12 @@
+show exp 0
+show exp 1
+show exp -1
+show exp 1.1
+show exp -1.1
+show exp 100
+show exp "0
+show exp "1
+show exp "-1
+show exp "1.1
+show exp "-1.1
+show exp "100
