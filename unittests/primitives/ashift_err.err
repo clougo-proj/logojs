@@ -1,0 +1,30 @@
+Not enough inputs to ashift
+    at 1,12	ashift_err.lgo
+Not enough inputs to ashift
+    at 2,14	ashift_err.lgo
+ashift doesn't like 1.1 as input
+    at 4,6	ashift_err.lgo
+ashift doesn't like abc as input
+    at 5,6	ashift_err.lgo
+ashift doesn't like [] as input
+    at 6,6	ashift_err.lgo
+ashift doesn't like {} as input
+    at 7,6	ashift_err.lgo
+ashift doesn't like true as input
+    at 8,6	ashift_err.lgo
+ashift doesn't like false as input
+    at 9,6	ashift_err.lgo
+ashift doesn't like 1.1 as input
+    at 11,6	ashift_err.lgo
+ashift doesn't like abc as input
+    at 12,6	ashift_err.lgo
+ashift doesn't like [] as input
+    at 13,6	ashift_err.lgo
+ashift doesn't like {} as input
+    at 14,6	ashift_err.lgo
+ashift doesn't like true as input
+    at 15,6	ashift_err.lgo
+ashift doesn't like false as input
+    at 16,6	ashift_err.lgo
+Too much inside ()'s
+    at 18,19	ashift_err.lgo
