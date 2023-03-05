@@ -7,7 +7,7 @@
 // Runs in browser's Logo worker thread or Node's main thread
 
 export default {
-    "create": function(logo, sys, ext) {
+    "create": function(logo, sys) {
 
         const DEFAULT_MODULE = "main";
 
@@ -28,8 +28,6 @@ export default {
                 "/mod/class/class.lgo"
             ]
         };
-
-        const LOGO_EVENT = logo.constants.LOGO_EVENT;
 
         const LOGO_LIBRARY = logo.constants.LOGO_LIBRARY;
 
@@ -130,27 +128,9 @@ export default {
 
         clearWorkspace();
 
-        let _resolveCall = {};
-
-        async function getAsyncReturnVal(callId) {
-            logo.env.prepareToBeBlocked();
-            return await new Promise((resolve) => {
-                _resolveCall[callId] = resolve;
-            });
-        }
-        env.getAsyncReturnVal = getAsyncReturnVal;
-
-        function onAsyncReturnVal(retVal, callId) {
-            if (callId in _resolveCall) {
-                _resolveCall[callId](retVal);
-                delete _resolveCall[callId];
-            }
-        }
-        env.onAsyncReturnVal = onAsyncReturnVal;
-
         function registerUserInputResolver(resolve) {
             _resolveUserInput = resolve;
-            ext.io.envstate("continue");
+            logo.io.call("continue");
         }
         env.registerUserInputResolver = registerUserInputResolver;
 
@@ -531,44 +511,41 @@ export default {
         env.setInteractiveMode = setInteractiveMode;
 
         function prepareToBeBlocked() {
-            ext.io.drawflush();
+            logo.canvas.flush();
         }
         env.prepareToBeBlocked = prepareToBeBlocked;
 
-        function registerOnStdinCallback() {
-            if ("io" in ext && "onstdin" in ext.io && typeof ext.io.onstdin == "function") {
-                ext.io.onstdin(async function(userInputBody){ // logoUserInputListener
-                    setUserInput(userInputBody.toString());
+        async function console(userInputBody) { // logoUserInputListener
+            setUserInput(userInputBody.toString());
 
-                    if (isPendingUserInput()) {
-                        resolveUserInput();
-                        return;
-                    }
-
-                    if (batchMode()) {
-                        return; // don't exit while running tests
-                    }
-
-                    while (hasUserInput()) {
-
-                        let userInput = getUserInput();
-
-                        if (sys.equalToken(userInput, "quit") || sys.equalToken(userInput, "exit") || sys.equalToken(userInput, "bye")) {
-                            _envState = LOGO_EVENT.EXIT;
-                            ext.io.exit();
-                            return;
-                        }
-
-                        let ret = await exec(userInput, logo.config.get("genCommand"));
-                        if (!sys.isUndefined(ret)) {
-                            logo.io.stdout("Result:" + logo.type.toString(ret));
-                        }
-                    }
-
-                    return;
-                }, getEnvState);
+            if (isPendingUserInput()) {
+                resolveUserInput();
+                return;
             }
+
+            if (batchMode()) {
+                return; // don't exit while running tests
+            }
+
+            while (hasUserInput()) {
+
+                let userInput = _userInput.shift();
+
+                if (sys.equalToken(userInput, "quit") || sys.equalToken(userInput, "exit") || sys.equalToken(userInput, "bye")) {
+                    _envState = "exit";
+                    logo.io.call("out", "Thank you for using Logo. Bye!");
+                    return;
+                }
+
+                let ret = await exec(userInput, logo.config.get("genCommand"));
+                if (!sys.isUndefined(ret)) {
+                    logo.io.call("out", "Result:" + logo.type.toString(ret));
+                }
+            }
+
+            return;
         }
+        env.console = console;
 
         function setUserInput(val) {
             Array.prototype.push.apply(_userInput, val.split(/\r?\n/));
@@ -579,19 +556,26 @@ export default {
         function hasUserInput() {
             return _userInput.length > 0;
         }
-        env.hasUserInput = hasUserInput;
 
-        function getUserInput() {
+        async function getUserInput() {
+            if (hasUserInput()) {
+                return _userInput.shift();
+            }
+
+            prepareToBeBlocked();
+            do {
+                await new Promise((resolve) => {
+                    registerUserInputResolver(resolve);
+                });
+            } while (!hasUserInput());
+
             return _userInput.shift();
         }
         env.getUserInput = getUserInput;
 
         function initLogoEnv() {
             clearWorkspace();
-
             logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).reset();
-
-            registerOnStdinCallback();
         }
         env.initLogoEnv = initLogoEnv;
 
@@ -949,7 +933,7 @@ export default {
             let parsedCode = logo.parse.parseSrc(logosrc, srcidx, srcLine);
             logo.trace.info(parsedCode, "parse.result");
             setGenJs(genjs);
-            setEnvState(LOGO_EVENT.CONTINUE);
+            setEnvState("continue");
 
             if (genjs) {
                 await evalLogoGen(parsedCode);
@@ -1014,8 +998,28 @@ export default {
 
         function snapshot() {
             logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).snapshot();
-            logo.io.canvasSnapshot();
+            logo.io.call("canvasSnapshot");
         }
+
+        async function runSingleTest(testName, testMethod) {
+            await logo.Logo.testRunner.runSingleTest(testName, testMethod, logo);
+            logo.io.call(logo.env.getEnvState());
+        }
+        env.runSingleTest = runSingleTest;
+
+        async function logoExec(src, srcPath) {
+            logo.io.call("busy");
+            await exec(src, true, srcPath);
+            logo.io.call(logo.env.getEnvState());
+        }
+        env.logoExec = logoExec;
+
+        async function logoRun(src, srcPath) {
+            logo.io.call("busy");
+            await exec(src, false, srcPath);
+            logo.io.call(logo.env.getEnvState());
+        }
+        env.logoRun = logoRun;
 
         async function exec(logoSrc, genjs, srcPath) {
             let srcidx = SourceIndex.getSrcIndex(srcPath);
@@ -1034,7 +1038,20 @@ export default {
                 }
             );
         }
-        env.exec = exec;
+
+        async function logoExecByLine(src, srcPath) {
+            logo.io.call("busy");
+            await execByLine(src, true, srcPath);
+            logo.io.call(logo.env.getEnvState());
+        }
+        env.logoExecByLine = logoExecByLine;
+
+        async function logoRunByLine(src, srcPath) {
+            logo.io.call("busy");
+            await execByLine(src, false, srcPath);
+            logo.io.call(logo.env.getEnvState());
+        }
+        env.logoRunByLine = logoRunByLine;
 
         async function execByLine(logoSrc, genjs, srcPath) {
             let srcidx = SourceIndex.getSrcIndex(srcPath);
@@ -1059,7 +1076,6 @@ export default {
                 }
             );
         }
-        env.execByLine = execByLine;
 
         function isInterpretedCommand(line) {
             return line.length >= 2 && line.charAt(0) === ";" && line.charAt(1) === "?";
@@ -1098,14 +1114,14 @@ export default {
         env.checkUnusedValue = checkUnusedValue;
 
         function errorOnLogoException(e, omitCurProc = true) {
-            logo.io.stderr(e.formatMessage());
+            logo.io.call("err", e.formatMessage());
             if (!omitCurProc) {
                 _callStack.push([_frameProcName, e.getSrcmap()]);
             }
 
             let stackDump = stackToDump(_callStack.slice(0).reverse());
             if (stackDump) {
-                logo.io.stderr(stackDump);
+                logo.io.call("err", stackDump);
             }
         }
         env.errorOnLogoException = errorOnLogoException;
@@ -1115,16 +1131,16 @@ export default {
         }
 
         function errorOnStackOverflowException() {
-            logo.io.stderr(logo.type.LogoException.STACK_OVERFLOW.formatMessage());
+            logo.io.call("err", logo.type.LogoException.STACK_OVERFLOW.formatMessage());
             let stackDump = stackToDump(_callStack.slice(-10).reverse());
             if (stackDump) {
-                logo.io.stderr(stackDump);
-                logo.io.stderr("\t...");
+                logo.io.call("err", stackDump);
+                logo.io.call("err", "\t...");
             }
 
             stackDump = stackToDump(_callStack.slice(0, 10).reverse());
             if (stackDump) {
-                logo.io.stderr(stackDump);
+                logo.io.call("err", stackDump);
             }
         }
 
@@ -1341,8 +1357,8 @@ export default {
 
         async function loadLogoModules(modules) {
             for (let mod of modules) {
-                logo.io.stderr("LOAD \"" + mod);
-                await logo.entry.exec(await logo.logofs.readFile(mod), mod);
+                logo.io.call("err", "LOAD \"" + mod);
+                await logoExec(await logo.logofs.readFile(mod), mod);
             }
         }
 
