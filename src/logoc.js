@@ -53,18 +53,17 @@ Logo.create = function(ext, config=undefined) {
 
     const logo = {};
 
+    logo.Logo = Logo;
     logo.ext = ext;
 
-    logo.asyncRetVal = undefined;
-
     logo.io = ext.io;
-    logo.entry = ext.entry;
+    logo.canvas = ext.canvas;
 
     logo.constants = CONSTANTS;
     logo.config = (config === undefined) ? Config.create(sys) : config;
     logo.type = Type.create(logo, sys);
     logo.trace = Trace.create(logo, sys);
-    logo.env = Env.create(logo, sys, ext);
+    logo.env = Env.create(logo, sys);
     logo.interpreter = Interpreter.create(logo, sys);
     logo.codegen = Codegen.create(logo, sys);
     logo.parse = Parse.create(logo, sys);

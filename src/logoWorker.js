@@ -7,231 +7,107 @@
 
 import CanvasCommon from "../canvasCommon.js";
 
-import { Logo, sys } from "./logoc.js";
+import LibraryUtils from "../libraryUtils.js";
 
-const LOGO_EVENT = Logo.constants.LOGO_EVENT;
+import { Logo, sys } from "./logoc.js";
 
 const LOGO_LIBRARY = Logo.constants.LOGO_LIBRARY;
 
-const LOGO_METHOD = Logo.constants.LOGO_METHOD;
-
-postMessage([LOGO_EVENT.BUSY]);
-
-Logo.io = {
-    "stdout": webStdout,
-    "stdoutn": webStdoutn,
-    "stderr": webStderr,
-    "stderrn": webStderrn
-};
-
-const ext = makeLogoDependencies();
+const ext = makeLogoHost();
 const logo = Logo.create(ext);
 
-logo.env.loadDefaultLogoModules()
-    .then(() => postMessage([LOGO_EVENT.READY]));
+let _resolveCall = {};
 
-function webStdout(text) {
-    postMessage([LOGO_EVENT.OUT, text]);
-}
+logo.env.loadDefaultLogoModules();
 
-function webStdoutn(text) {
-    postMessage([LOGO_EVENT.OUTN, text]);
-}
+let logoEngine = {
+    "init":(logoHost, config=undefined) => {
+        logo.io = LibraryUtils.createProxyLibrary(logoHost, callExtFunc);
 
-function webStderr(text) {
-    postMessage([LOGO_EVENT.ERR, text]);
-}
+        Logo.testRunner.out = (val) => logo.io.call("out", val);
+        Logo.testRunner.outn = (val) => logo.io.call("outn", val);
 
-function webStderrn(text) {
-    postMessage([LOGO_EVENT.ERRN, text]);
-}
+        if (config !== undefined) {
+            logo.config.override(config);
+            logo.env.loadDefaultLogoModules();
+        }
 
-function webCleartext() {
-    postMessage([LOGO_EVENT.CLEAR_TEXT]);
-}
-
-function webEditorLoad(src) {
-    postMessage([LOGO_EVENT.EDITOR_LOAD, src]);
-}
-
-function webCanvasSnapshot() {
-    postMessage([LOGO_EVENT.CANVAS_SNAPSHOT]);
-}
-
-async function webGetFocus() {
-    let callId = crypto.randomUUID();
-    postMessage([LOGO_EVENT.GET_FOCUS, callId]);
-    return await logo.env.getAsyncReturnVal(callId);
-}
-
-function webSetFocus(name) {
-    postMessage([LOGO_EVENT.SET_FOCUS, name]);
-}
-
-function webExit(batchMode) {
-    if (!batchMode) {
-        postMessage([LOGO_EVENT.OUT, "Thank you for using Logo. Bye!"]);
-        postMessage([LOGO_EVENT.OUT, "(You may now close the window)"]);
-    }
-}
-
-function webEnvState(envState) {
-    postMessage([envState]);
-}
-
-async function webExec(src, srcPath) {
-    postMessage([LOGO_EVENT.BUSY]);
-    await logo.env.exec(src, true, srcPath);
-    postMessage([logo.env.getEnvState()]);
-}
-
-async function webRunSingleTest(testName, testMethod) {
-    await Logo.testRunner.runSingleTest(testName, testMethod, logo);
-    postMessage([logo.env.getEnvState()]);
-}
-
-function registerEventHandler(logoUserInputListener) {
-    const webMsgHandler = {};
-
-    webMsgHandler[LOGO_METHOD.TEST] = async function() {
-        postMessage([LOGO_EVENT.BUSY]);
+        logo.io.call("ready");
+    },
+    "test": async function() {
+        logo.io.call("busy");
         await Logo.testRunner.runTests(undefined, logo);
-        postMessage([LOGO_EVENT.READY]);
-
-    };
-
-    webMsgHandler[LOGO_METHOD.RUN] = async function(e) {
-        postMessage([LOGO_EVENT.BUSY]);
-        await logo.env.exec(getMsgBody(e), false, getMsgId(e));
-        postMessage([logo.env.getEnvState()]);
-    };
-
-    webMsgHandler[LOGO_METHOD.EXEC] = function(e) {
-        webExec(getMsgBody(e), getMsgId(e));
-    };
-
-    webMsgHandler[LOGO_METHOD.CONSOLE] = async function(e) {
-        postMessage([LOGO_EVENT.BUSY]);
+        logo.io.call("ready");
+    },
+    "run": (src, srcPath) => logo.env.logoRun(src, srcPath),
+    "exec": (src, srcPath) => logo.env.logoExec(src, srcPath),
+    "console": async function(line) {
+        logo.io.call("busy");
         logo.env.setInteractiveMode();
-        await logoUserInputListener(getMsgBody(e) + logo.type.NEWLINE);  // needs new line to be treated as completed command
-        postMessage([logo.env.getEnvState()]);
-    };
-
-    webMsgHandler[LOGO_METHOD.CLEAR_WORKSPACE] = function() {
-        postMessage([LOGO_EVENT.BUSY]);
+        await logo.env.console(line + logo.type.NEWLINE);  // needs new line to be treated as completed command
+        logo.io.call(logo.env.getEnvState());
+    },
+    "clearWorkspace": function() {
+        logo.io.call("busy");
         logo.env.clearWorkspace();
         logo.env.loadDefaultLogoModules();
         logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).draw();
-        postMessage([LOGO_EVENT.READY]);
-    };
-
-    webMsgHandler[LOGO_METHOD.KEYBOARD_EVENT] = function(e) {
-        logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).onKeyboardEvent(getMsgBody(e));
-    };
-
-    webMsgHandler[LOGO_METHOD.MOUSE_EVENT] = function(e) {
-        logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).onMouseEvent(getMsgBody(e));
-    };
-
-    webMsgHandler[LOGO_METHOD.RETURN_VALUE] = function(e) {
-        logo.env.onAsyncReturnVal(getMsgBody(e), getMsgId(e));
-    };
-
-    webMsgHandler[LOGO_METHOD.CONFIG] = function(e) {
-        logo.config.override(getMsgBody(e));
-        logo.env.loadDefaultLogoModules();
-    };
-
-    webMsgHandler[LOGO_METHOD.TURTLE_UNDO] = function() {
+        logo.io.call("ready");
+    },
+    "keyboardEvent": function(event) {
+        logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).onKeyboardEvent(event);
+    },
+    "mouseEvent": function(event) {
+        logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).onMouseEvent(event);
+    },
+    "returnValue": onExtFuncReturnVal,
+    "turtleUndo": function() {
         logo.lrt.util.getLibrary(LOGO_LIBRARY.GRAPHICS).undo();
-    };
+    }
+};
 
-    // listen to events in the worker
-    self.addEventListener("message",
-        async function(e) {
-            logo.env.setEnvState(LOGO_EVENT.READY);
-            sys.assert(getMsgType(e) in webMsgHandler);
-            await webMsgHandler[getMsgType(e)](e);
-            ext.canvas.flush();
-        }, false);
+// listen to events in the worker
+self.addEventListener("message",
+    async function(e) {
+        logo.env.setEnvState("ready");
+        let method = e.data.shift();
+        sys.assert(method in logoEngine);
+        await logoEngine[method].apply(null, e.data);
+        logo.canvas.flush();
+    }, false);
+
+postMessage(["created", LibraryUtils.getLibrarySignature(logoEngine)]);
+
+function generateCallId() {
+    return crypto.randomUUID();
 }
 
-function getMsgType(e) {
-    return e.data[0];
+async function callExtFunc(method, args) {
+    let callId = generateCallId();
+    let promise = new Promise((resolve) => {
+        _resolveCall[callId] = resolve;
+    });
+
+    args.unshift(callId);
+    postMessage([].concat(method, args));
+    logo.env.prepareToBeBlocked();
+    return await promise;
 }
 
-function getMsgBody(e) {
-    return e.data[1];
+function onExtFuncReturnVal(retVal, callId) {
+    if (callId in _resolveCall) {
+        _resolveCall[callId](retVal);
+        delete _resolveCall[callId];
+    }
 }
 
-function getMsgId(e) {
-    return e.data[2];
-}
+function makeLogoHost() {
+    const canvas = CanvasCommon.createSender(
+        (buffer) => logo.io.call("draw", buffer), // logo.io.canvas(msg),
+        (buffer) => postMessage(buffer, [buffer]) // pass by reference
+    );
 
-function makeLogoDependencies() {
-    const canvas = makeCanvas();
     return {
-        "entry": {
-            "exec": webExec,
-            "runSingleTest": webRunSingleTest
-        },
-        "io": {
-            "stdout": webStdout,
-            "stdoutn": webStdoutn,
-            "stderr": webStderr,
-            "stderrn": webStderrn,
-            "cleartext": webCleartext,
-            "editorLoad": webEditorLoad,
-            "canvasSnapshot": webCanvasSnapshot,
-            "getFocus": webGetFocus,
-            "setFocus": webSetFocus,
-            "drawflush": function() {
-                ext.canvas.flush();
-            },
-            "exit": webExit,
-            "envstate": webEnvState,
-            "onstdin": registerEventHandler
-        },
         "canvas": canvas
     };
-}
-
-function makeCanvas() {
-    const canvas = {};
-    const tqCacheSize = 128;
-    let tqCacheArray = new Float32Array(tqCacheSize);
-    let tqCachePtr = 0;
-
-    canvas.sendCmd = function(cmd, args = []) {
-        let code = CanvasCommon.getPrimitiveCode(cmd);
-        if (code in CanvasCommon.primitivecode) {
-            if (tqCachePtr + args.length >= tqCacheSize - 1) {
-                canvas.flush();
-            }
-
-            tqCacheArray[++tqCachePtr] = code;
-            for (let i = 0; i < args.length; i++) {
-                tqCacheArray[++tqCachePtr] = args[i];
-            }
-        }
-    };
-
-    canvas.sendCmdAsString = function(cmd, args = []) {
-        let code = CanvasCommon.getPrimitiveCode(cmd);
-        if (code in CanvasCommon.primitivecode) {
-            let length = args.length + 2;
-            canvas.flush();
-            postMessage([LOGO_EVENT.CANVAS, [].concat(length, code, args)]);
-        }
-    };
-
-    canvas.flush = function() {
-        if (tqCachePtr==0) return;
-        tqCacheArray[0] = tqCachePtr + 1; // store the length as first element;
-        postMessage(tqCacheArray.buffer, [tqCacheArray.buffer]); // pass by reference
-        tqCacheArray = new Float32Array(tqCacheSize);
-        tqCachePtr = 0;
-    };
-
-    return canvas;
 }

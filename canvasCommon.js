@@ -60,5 +60,45 @@ export default (() => {
         return CanvasCommon.primitivecode[code][1];
     };
 
+    CanvasCommon.createSender = function(send, sendBinary) {
+        const sender = {};
+        const tqCacheSize = 128;
+        let tqCacheArray = new Float32Array(tqCacheSize);
+        let tqCachePtr = 0;
+
+        sender.sendCmd = function(cmd, args = []) {
+            let code = CanvasCommon.getPrimitiveCode(cmd);
+            if (code in CanvasCommon.primitivecode) {
+                if (tqCachePtr + args.length >= tqCacheSize - 1) {
+                    sender.flush();
+                }
+
+                tqCacheArray[++tqCachePtr] = code;
+                for (let i = 0; i < args.length; i++) {
+                    tqCacheArray[++tqCachePtr] = args[i];
+                }
+            }
+        };
+
+        sender.sendCmdAsString = function(cmd, args = []) {
+            let code = CanvasCommon.getPrimitiveCode(cmd);
+            if (code in CanvasCommon.primitivecode) {
+                let length = args.length + 2;
+                sender.flush();
+                send([].concat(length, code, args));
+            }
+        };
+
+        sender.flush = function() {
+            if (tqCachePtr==0) return;
+            tqCacheArray[0] = tqCachePtr + 1; // store the length as first element;
+            sendBinary(tqCacheArray.buffer);
+            tqCacheArray = new Float32Array(tqCacheSize);
+            tqCachePtr = 0;
+        };
+
+        return sender;
+    };
+
     return CanvasCommon;
 })();

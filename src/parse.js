@@ -9,8 +9,6 @@ export default {
     "create": function(logo, sys) {
         const parse = {};
 
-        const LOGO_EVENT = logo.constants.LOGO_EVENT;
-
         const PROC_ATTRIBUTE = logo.constants.PROC_ATTRIBUTE;
 
         const PROC_DECL = "to";
@@ -612,8 +610,8 @@ export default {
                     if (!logo.type.LogoException.is(e)) {
                         throw e;
                     } else {
-                        logo.io.stderr(e.formatMessage());
-                        logo.io.stderr("    at " + logo.type.srcmapToLineRow(e.getSrcmap()));
+                        logo.io.call("err", e.formatMessage());
+                        logo.io.call("err", "    at " + logo.type.srcmapToLineRow(e.getSrcmap()));
                         reset();
                     }
                 }
@@ -651,8 +649,8 @@ export default {
         };
 
         parse.getParserState = function() {
-            return isVerticalBar() ? LOGO_EVENT.VERTICAL_BAR :
-                isMultiline() ? LOGO_EVENT.MULTILINE : LOGO_EVENT.READY;
+            return isVerticalBar() ? "vbar" :
+                isMultiline() ? "multiline" : "ready";
         };
 
         parse.reset();

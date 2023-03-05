@@ -3,14 +3,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //-------------------------------------------------------------------------------------------------------
 
-import Constants from "./constants.js";
-
-const LOGO_EVENT = Constants.LOGO_EVENT;
-
-const LOGO_METHOD = Constants.LOGO_METHOD;
+import LibraryUtils from "./libraryUtils.js";
 
 export default {
-    "create": function create(eventHandler) {
+    "create": function create(host) {
+        let logojs = { };
+
         if(typeof(Worker) === "undefined") {
             return undefined;
         }
@@ -18,107 +16,31 @@ export default {
         let worker =new Worker(new URL("./src/logoWorker.js", import.meta.url), {type: "module"});
 
         // handles messages from logo worker
-        worker.onmessage = function(event) {
-            let msg = event.data;
+        worker.onmessage = function(e) {
+            let msg = e.data;
 
             if (msg instanceof ArrayBuffer) {
                 let tqcache = new Float32Array(msg);
-                eventHandler.canvas(tqcache);
+                host.call(undefined, "draw", tqcache);
                 return;
             }
 
-            switch(msg[0]) {
-            case LOGO_EVENT.CANVAS:
-                // message for turtle canvas
-                eventHandler.canvas(msg[1]);
-                break;
-            case LOGO_EVENT.READY:
-            case LOGO_EVENT.MULTILINE:
-            case LOGO_EVENT.VERTICAL_BAR:
-            {
-                // ready for logo command line input
-                let prompt = (msg[0] == LOGO_EVENT.MULTILINE) ? "> " :
-                    (msg[0] == LOGO_EVENT.VERTICAL_BAR) ? "| " :
-                        (msg[0] == LOGO_EVENT.READY) ? "? " : "";
+            let event = msg.shift();
 
-                eventHandler.ready();
-                eventHandler.prompt(prompt);
-                break;
+            if (event == "created") {
+                logojs.method = LibraryUtils.createProxyLibrary(msg.shift(), callLogoEngine);
+                callLogoEngine("init", [LibraryUtils.getLibrarySignature(host)]);
             }
-            case LOGO_EVENT.CONTINUE:
-                // ready for user interative input (e.g. readword)
-                eventHandler.ready();
-                eventHandler.user();
-                break;
-            case LOGO_EVENT.OUT:
-            case LOGO_EVENT.ERR:
-                // out/err stream with newline
-                eventHandler.writeln(msg[1]);
-                break;
-            case LOGO_EVENT.OUTN:
-            case LOGO_EVENT.ERRN:
-                // out/err stream w/o newline
-                eventHandler.write(msg[1]);
-                break;
-            case LOGO_EVENT.CLEAR_TEXT:
-                // cleartext in terminal
-                eventHandler.cleartext();
-                break;
-            case LOGO_EVENT.BUSY:
-                // logo work is busy (vs. ready)
-                eventHandler.busy();
-                break;
-            case LOGO_EVENT.EXIT:
-                eventHandler.prompt("You can now close the window");
-                eventHandler.exit();
-                break;
-            case LOGO_EVENT.EDITOR_LOAD:
-                eventHandler.editorLoad(msg[1]);
-                break;
-            case LOGO_EVENT.CANVAS_SNAPSHOT:
-                eventHandler.canvasSnapshot();
-                break;
-            case LOGO_EVENT.GET_FOCUS:
-                eventHandler.getFocus(msg[1]);
-                break;
-            case LOGO_EVENT.SET_FOCUS:
-                eventHandler.setFocus(msg[1]);
-                break;
-            default:
+
+            if (event in host) {
+                host[event].apply(null, msg);
             }
         };
 
-        return {
-            "console": function(param) {
-                worker.postMessage([LOGO_METHOD.CONSOLE, param]);
-            },
-            "exec": function(param) {
-                worker.postMessage([LOGO_METHOD.EXEC, param, "** Editor **"]);
-            },
-            "run": function(param) {
-                worker.postMessage([LOGO_METHOD.RUN, param, 1]);
-            },
-            "test": function() {
-                worker.postMessage([LOGO_METHOD.TEST]);
-            },
-            "config": function(config) {
-                worker.postMessage([LOGO_METHOD.CONFIG, config]);
-            },
-            "clearWorkspace": function() {
-                worker.postMessage([LOGO_METHOD.CLEAR_WORKSPACE]);
-            },
-            "onKeyboardEvent": function(event) {
-                worker.postMessage([LOGO_METHOD.KEYBOARD_EVENT, event]);
-            },
-            "onMouseEvent": function(event) {
-                worker.postMessage([LOGO_METHOD.MOUSE_EVENT, event]);
-            },
-            "returnValue": function(val, callId) {
-                worker.postMessage([LOGO_METHOD.RETURN_VALUE, val, callId]);
-            },
-            "turtleUndo": function() {
-                worker.postMessage([LOGO_METHOD.TURTLE_UNDO]);
-            }
-        };
+        function callLogoEngine(method, args) {
+            worker.postMessage([].concat(method, args));
+        }
+
+        return logojs;
     }
 };

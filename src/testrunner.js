@@ -25,7 +25,7 @@ export default {
             failCount = 0;
 
             await runUnitTestDir();
-            Logo.io.stdout("Total:" + count + "\tFailed:" + failCount);
+            testRunner.out("Total:" + count + "\tFailed:" + failCount);
             return failCount;
         }
         testRunner.runTests = runTests;
@@ -43,7 +43,7 @@ export default {
         testRunner.runSingleTest = runSingleTest;
 
         function initializeTestEnv(logo) {
-            extForTest = makeLogoDependenciesForTest(logo.ext);
+            extForTest = makeLogoTestHost(logo.ext);
             logoForUnitTests = Logo.create(extForTest, logo.config);
         }
 
@@ -99,7 +99,7 @@ export default {
             await runUnitTestsInSubDirs(prefix);
         }
 
-        function makeLogoDependenciesForTest(ext) {
+        function makeLogoTestHost(ext) {
 
             let stdoutBuffer = "";
             let stderrBuffer = "";
@@ -107,47 +107,46 @@ export default {
 
             let _focus = "Clougo";
 
-            const extForTest = {
-                "entry": {
-                    "exec": async function(logoSrc, srcPath) { await logoForUnitTests.env.exec(logoSrc, true, srcPath); },
-                    "runSingleTest": async function(testName, testMethod) {
-                        await runSingleTest(testName, testMethod, ext);
-                    }
+            const logoEvent = {
+                "getfocus": function() { return _focus; },
+                "setfocus":  function(name) { _focus = name; },
+                "out": function(text) {
+                    stdoutBuffer += text + logoForUnitTests.type.NEWLINE;
                 },
-                "io": {
+                "outn": function(text) {
+                    stdoutBuffer += text;
+                },
+                "err": function(text) {
+                    stderrBuffer += text + logoForUnitTests.type.NEWLINE;
+                },
+                "errn": function(text) {
+                    stderrBuffer += text;
+                },
+                "cleartext": function() {
+                    stdoutBuffer += sys.getCleartextChar();
+                }
+            };
+
+            const extForTest = {
+                "test": {
                     "clearBuffers": function() {
                         stdoutBuffer = "";
                         stderrBuffer = "";
                     },
-                    "getStdoutBuffer": function() { return stdoutBuffer; },
-                    "getStderrBuffer": function() { return stderrBuffer; },
-                    "stdout": function(text) {
-                        stdoutBuffer += text + logoForUnitTests.type.NEWLINE;
+                    "getStdoutBuffer": () => stdoutBuffer,
+                    "getStderrBuffer": () => stderrBuffer
+                },
+                "io": {
+                    "call": function(...args) {
+                        let procName = args.shift();
+                        if (procName in logoEvent) {
+                            return logoEvent[procName].apply(null, args);
+                        }
                     },
-                    "stdoutn": function(text) {
-                        stdoutBuffer += text;
-                    },
-                    "stderr": function(text) {
-                        stderrBuffer += text + logoForUnitTests.type.NEWLINE;
-                    },
-                    "stderrn": function(text) {
-                        stderrBuffer += text;
-                    },
-                    "readfile": async fileName => await logoForUnitTests.logofs.readFile(curDirName + "/" + fileName),
-                    "drawflush": function() {},
-                    "cleartext": function() {
-                        stdoutBuffer += sys.getCleartextChar();
-                    },
-                    "canvasSnapshot": function() {},
-                    "getFocus": function() { return _focus; },
-                    "setFocus": function(name) { _focus = name; },
-                    "mockStdin": function(text) {
-                        extForTest.io.onstdin = function(logoUserInputListener) {
-                            logoUserInputListener(text);
-                        };
-                    }
+                    "readfile": async fileName => await logoForUnitTests.logofs.readFile(curDirName + "/" + fileName)
                 },
                 "canvas": {
+                    "flush": () => {},
                     "clearBuffer": function() {
                         turtleBuffer = "";
                     },
@@ -216,11 +215,11 @@ export default {
             let testParseBase = await getTestParseBase(testName);
             let parseResult = JSON.stringify(logoForUnitTests.parse.parseBlock(logoForUnitTests.parse.parseSrc(testSrc, 1))) + logoForUnitTests.type.NEWLINE;
             if (parseResult == testParseBase) {
-                Logo.io.stdout("\t\tpassed ");
+                testRunner.out("\t\tpassed ");
                 return;
             }
 
-            Logo.io.stdout("\t\tfailed");
+            testRunner.out("\t\tfailed");
             if (singleTestMode) {
                 outputIfDifferent("parsed", testParseBase, parseResult);
             }
@@ -233,9 +232,9 @@ export default {
                 await runTestMethod(testSrc, testName);
                 return true;
             } catch (e) {
-                Logo.io.stdout("\t\tfailed");
+                testRunner.out("\t\tfailed");
                 if (singleTestMode) {
-                    Logo.io.stdout(e.stack);
+                    testRunner.out(e.stack);
                 }
 
                 return false;
@@ -245,7 +244,7 @@ export default {
         async function testGenericRun(testName, runTestMethod) {
             let testSrcName = testName + ".lgo";
             let testSrc = await getTestSrc(testName);
-            extForTest.io.clearBuffers();
+            extForTest.test.clearBuffers();
             extForTest.canvas.clearBuffer();
 
             if (!await tryRunTestMethod(testSrc, testSrcName, runTestMethod)) {
@@ -257,16 +256,16 @@ export default {
             const errExpected = await getTestErrBase(testName);
             const drawExpected = await getTestDrawBase(testName);
 
-            const outActual = extForTest.io.getStdoutBuffer();
-            const errActual = extForTest.io.getStderrBuffer();
+            const outActual = extForTest.test.getStdoutBuffer();
+            const errActual = extForTest.test.getStderrBuffer();
             const drawActual = extForTest.canvas.getBuffer();
 
             if (outActual == outExpected && errActual == errExpected && drawActual == drawExpected) {
-                Logo.io.stdout("\t\tpassed\trun time: "+logoForUnitTests.env.getRunTime()+"ms");
+                testRunner.out("\t\tpassed\trun time: "+logoForUnitTests.env.getRunTime()+"ms");
                 return;
             }
 
-            Logo.io.stdout("\t\tfailed");
+            testRunner.out("\t\tfailed");
             if (singleTestMode) {
                 outputIfDifferent("out", outActual, outExpected);
                 outputIfDifferent("err", errActual, errExpected);
@@ -278,7 +277,7 @@ export default {
 
         function outputIfDifferent(type, actual, expected) {
             if (expected !== actual) {
-                Logo.io.stdout("Expected " + type + ":\n<" + expected + ">\n\tActual " + type + ":\n<" + actual + ">");
+                testRunner.out("Expected " + type + ":\n<" + expected + ">\n\tActual " + type + ":\n<" + actual + ">");
             }
         }
 
@@ -355,11 +354,11 @@ export default {
 
         async function runTestHelper(prefix, testName, testMethod) {
             curDirName = getDirName(prefix);
-            extForTest.io.mockStdin(await getTestInBase(testName));
             logoForUnitTests.env.initLogoEnv();
+            logoForUnitTests.env.console(await getTestInBase(testName));
             count++;
 
-            Logo.io.stdoutn(prefix + "." + testName + "(" + testMethod + "):");
+            testRunner.outn(prefix + "." + testName + "(" + testMethod + "):");
             let testSettings = toTestSettings(testMethod);
             let backupConfig = overrideLogoConfig(logoForUnitTests, testSettings);
             await logoForUnitTests.env.loadDefaultLogoModules();
@@ -369,31 +368,19 @@ export default {
                 await testParse(testName);
                 break;
             case Logo.mode.RUNL:
-                await testGenericRun(testName,
-                    async function(testSrc, srcPath) {
-                        await logoForUnitTests.env.execByLine(testSrc, false, srcPath);
-                    });
+                await testGenericRun(testName, logoForUnitTests.env.logoRunByLine);
                 break;
             case Logo.mode.EXECL:
-                await testGenericRun(testName,
-                    async function(testSrc, srcPath) {
-                        await logoForUnitTests.env.execByLine(testSrc, true, srcPath);
-                    });
+                await testGenericRun(testName, logoForUnitTests.env.logoExecByLine);
                 break;
             case Logo.mode.RUN:
-                await testGenericRun(testName,
-                    async function(testSrc, srcPath) {
-                        await logoForUnitTests.env.exec(testSrc, false, srcPath);
-                    });
+                await testGenericRun(testName, logoForUnitTests.env.logoRun);
                 break;
             case Logo.mode.EXEC:
-                await testGenericRun(testName,
-                    async function(testSrc, srcPath) {
-                        await logoForUnitTests.env.exec(testSrc, true, srcPath);
-                    });
+                await testGenericRun(testName, logoForUnitTests.env.logoExec);
                 break;
             default:
-                Logo.io.stdout("\t\t" + testSettings.mode + " not found");
+                testRunner.out("\t\t" + testSettings.mode + " not found");
                 failCount++;
             }
 

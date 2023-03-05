@@ -6,36 +6,6 @@
 export default {
     MAX_UNDO_DEPTH: 100,
     CLASSNAME: "$CLASSNAME",
-    LOGO_EVENT: {
-        "BUSY": "busy",
-        "READY": "ready",
-        "MULTILINE": "multiline",
-        "VERTICAL_BAR" : "vbar",
-        "CONTINUE": "continue",
-        "CANVAS": "canvas",
-        "CANVAS_SNAPSHOT": "canvasSnapshot",
-        "GET_FOCUS": "getfocus",
-        "SET_FOCUS": "setfocus",
-        "OUT": "out",
-        "OUTN": "outn",
-        "ERR": "err",
-        "ERRN": "errn",
-        "EXIT": "exit",
-        "CONFIG": "config",
-        "CLEAR_TEXT": "cleartext",
-        "EDITOR_LOAD": "editorLoad"
-    },
-    LOGO_METHOD: {
-        "CONSOLE": "console",
-        "EXEC": "exec",
-        "RUN": "run",
-        "TEST": "test",
-        "CLEAR_WORKSPACE": "clearWorkspace",
-        "TURTLE_UNDO": "turtleUndo",
-        "KEYBOARD_EVENT": "keyboardEvent",
-        "MOUSE_EVENT": "mouseEvent",
-        "RETURN_VALUE": "returnValue"
-    },
     LOGO_LIBRARY: {
         "DATA_STRUCT": "ds",
         "COMMM": "comm",

@@ -11,21 +11,14 @@ import { readFileSync } from "fs";
 
 import { Logo, sys } from "./src/logoc.js";
 
-const LOGO_EVENT = Logo.constants.LOGO_EVENT;
+const out = console.log; // eslint-disable-line no-console
+const outn = function(v) { process.stdout.write(v); };
+const err = console.error; // eslint-disable-line no-console
 
-const stdout = console.log; // eslint-disable-line no-console
-const stdoutn = function(v) { process.stdout.write(v); };
-const stderr = console.error; // eslint-disable-line no-console
-const stderrn = function(v) { process.stderr.write(v); };
+Logo.testRunner.out = out;
+Logo.testRunner.outn = outn;
 
-Logo.io = {
-    "stdout": stdout,
-    "stdoutn": stdoutn,
-    "stderr": stderr,
-    "stderrn": stderrn
-};
-
-const ext = makeLogoDependencies();
+const ext = makeLogoHost();
 const logo = Logo.create(ext);
 const cmd = parseArgv(process.argv);
 
@@ -51,7 +44,7 @@ function postCreation() {
         srcRunner[cmd.op](logoSrc, cmd.file)
             .then(() => process.exit())
             .catch(e => {
-                stderr(e);
+                err(e);
                 process.exit(-1);
             });
 
@@ -62,7 +55,7 @@ function postCreation() {
         Logo.testRunner.runTests("file" in cmd ? [cmd.file] : [], logo)
             .then(failCount => process.exit(failCount !== 0))
             .catch(e => {
-                stderr(e);
+                err(e);
                 process.exit(-1);
             });
 
@@ -72,10 +65,11 @@ function postCreation() {
     if (cmd.op === Logo.mode.CONSOLE) {
         process.stdout.write("Welcome to Logo\n? ");
         logo.env.setInteractiveMode();
+        setupInputListener(logo.env.console, logo.env.getEnvState);
         return;
     }
 
-    stderr(
+    err(
         "Usage:\n" +
             "\tnode logo                            - interactive mode\n" +
             "\tnode logo <LGO file>                 - compile to JS and execute\n" +
@@ -139,72 +133,54 @@ function parseArgv(argv) {
 function makeSrcRunner() {
     const srcRunner = {};
 
-    srcRunner[Logo.mode.RUN] = async function(src, srcPath) { await logo.env.exec(src, false, srcPath); };
-    srcRunner[Logo.mode.RUNL] = async function(src, srcPath) { await logo.env.execByLine(src, false, srcPath); };
-    srcRunner[Logo.mode.EXEC] = async function(src, srcPath) { await logo.env.exec(src, true, srcPath); };
-    srcRunner[Logo.mode.EXECL] = async function(src, srcPath) { await logo.env.execByLine(src, true, srcPath); };
+    srcRunner[Logo.mode.RUN] = logo.env.logoRun,
+    srcRunner[Logo.mode.RUNL] = logo.env.logoRunByLine,
+    srcRunner[Logo.mode.EXEC] = logo.env.logoExec,
+    srcRunner[Logo.mode.EXECL] = logo.env.logoExecByLine,
     srcRunner[Logo.mode.EXECJS] = async function(src) { await logo.env.evalLogoJsTimed(src); };
     srcRunner[Logo.mode.PARSE] = async function(src) {
-        stdout(JSON.stringify(logo.parse.parseBlock(logo.parse.parseSrc(src, 1))));
+        out(JSON.stringify(logo.parse.parseBlock(logo.parse.parseSrc(src, 1))));
     };
 
     srcRunner[Logo.mode.CODEGEN] = async function(src) {
-        stdout(await logo.env.codegenOnly(src));
+        out(await logo.env.codegenOnly(src));
     };
 
     return srcRunner;
 }
 
-function makeLogoDependencies() {
+function makeLogoHost() {
     let _focus = "Clougo";
-    return  {
-        "entry": {
-            "exec": async function(logoSrc, srcPath) { await logo.env.exec(logoSrc, true, srcPath); },
-            "runSingleTest": async function(testName, testMethod) {
-                await Logo.testRunner.runSingleTest(testName, testMethod, logo);
+
+    const logoEvent = {
+        "exit": function(batchMode) {
+            if (!batchMode) {
+                out("Thank you for using Logo. Bye!");
             }
+
+            process.exit();
         },
+        "out": console.log,  // eslint-disable-line no-console
+        "outn": function(v) { process.stdout.write(v); },
+        "err": console.error,  // eslint-disable-line no-console
+        "errn": function(v) { process.stderr.write(v); },
+        "cleartext": function() { process.stdout.write(sys.getCleartextChar()); },
+        "getfocus": function() { return _focus; },
+        "setfocus": function(name) { _focus = name; }
+    };
+
+    return  {
         "io": {
-            "stdout": console.log,  // eslint-disable-line no-console
-            "stdoutn": function(v) { process.stdout.write(v); },
-            "stderr": console.error,  // eslint-disable-line no-console
-            "stderrn": function(v) { process.stderr.write(v); },
-            "readfile": fileName => readFileSync(fileName, "utf8"),
-            "drawflush": function() {},
-            "editorLoad": function() {},
-            "canvasSnapshot": function() {},
-            "getFocus": function() { return _focus; },
-            "setFocus": function(name) { _focus = name; },
-            "cleartext": function() { process.stdout.write(sys.getCleartextChar()); },
-            "envstate": function() {},
-            "exit": function(batchMode) {
-                if (!batchMode) {
-                    stdout("Thank you for using Logo. Bye!");
+            "call": function(...args) {
+                let procName = args.shift();
+                if (procName in logoEvent) {
+                    return logoEvent[procName].apply(null, args);
                 }
-
-                process.exit();
             },
-            "onstdin": function(logoUserInputListener, getEnvState) {
-                const sysstdin = process.openStdin();
-                sysstdin.addListener("data", function(d) {
-                    logoUserInputListener(d).then(() => {
-
-                        let envState = getEnvState();
-
-                        if (envState == LOGO_EVENT.EXIT) {
-                            process.exit();
-                        }
-
-                        let prompt = envState == LOGO_EVENT.READY ? "? " :
-                            envState == LOGO_EVENT.MULTILINE ? "> " :
-                                envState == LOGO_EVENT.VERTICAL_BAR ? "| " : "";
-
-                        process.stdout.write(prompt);
-                    });
-                });
-            }
+            "readfile": fileName => readFileSync(fileName, "utf8")
         },
         "canvas": {
+            "flush": () => {},
             "sendCmd": function(cmd, args = []) {
                 logo.trace.info(cmd + " " + args.map(sys.logoFround6).join(" "), "draw");
             },
@@ -213,4 +189,24 @@ function makeLogoDependencies() {
             }
         }
     };
+}
+
+function setupInputListener(logoUserInputListener, getEnvState) {
+    const sysstdin = process.openStdin();
+    sysstdin.addListener("data", function(d) {
+        logoUserInputListener(d).then(() => {
+
+            let envState = getEnvState();
+
+            if (envState == "exit") {
+                process.exit();
+            }
+
+            let prompt = envState == "ready" ? "? " :
+                envState == "multiline" ? "> " :
+                    envState == "vbar" ? "| " : "";
+
+            process.stdout.write(prompt);
+        });
+    });
 }
