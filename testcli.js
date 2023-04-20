@@ -27,7 +27,7 @@ const CHAR_IO_TYPE = {
     "!": IO_TYPE.STDERR
 };
 
-const TIME_OUT = 2000; // ms
+const TIME_OUT = 3000; // ms
 
 const ERROR = -1;
 

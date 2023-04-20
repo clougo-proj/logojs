@@ -515,7 +515,7 @@ export default {
         }
         env.prepareToBeBlocked = prepareToBeBlocked;
 
-        async function console(userInputBody) { // logoUserInputListener
+        async function _console(userInputBody) { // logoUserInputListener
             setUserInput(userInputBody.toString());
 
             if (isPendingUserInput()) {
@@ -529,15 +529,8 @@ export default {
 
             while (hasUserInput()) {
 
-                let userInput = _userInput.shift();
+                let ret = await exec(_userInput.shift(), logo.config.get("genCommand"));
 
-                if (sys.equalToken(userInput, "quit") || sys.equalToken(userInput, "exit") || sys.equalToken(userInput, "bye")) {
-                    _envState = "exit";
-                    logo.io.call("out", "Thank you for using Logo. Bye!");
-                    return;
-                }
-
-                let ret = await exec(userInput, logo.config.get("genCommand"));
                 if (!sys.isUndefined(ret)) {
                     logo.io.call("out", "Result:" + logo.type.toString(ret));
                 }
@@ -545,7 +538,7 @@ export default {
 
             return;
         }
-        env.console = console;
+        env.console = _console;
 
         function setUserInput(val) {
             Array.prototype.push.apply(_userInput, val.split(/\r?\n/));
@@ -686,6 +679,10 @@ export default {
             });
         }
         env.importProcs = importProcs;
+
+        function nextEnvState(curEnvState, parserState) {
+            return curEnvState === "exit" ? "exit" : parserState;
+        }
 
         function setEnvState(val) {
             _envState = val;
@@ -941,7 +938,7 @@ export default {
                 await evalLogo(parsedCode);
             }
 
-            setEnvState(logo.parse.getParserState());
+            setEnvState(nextEnvState(getEnvState(), logo.parse.getParserState()));
         }
 
         function isEagerEval(logosrc) {

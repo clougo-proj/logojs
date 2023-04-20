@@ -1,0 +1,10 @@
+logocli
+>Welcome to Logo\n?\s
+<to say_bye\n
+>>\s
+<bye\n
+>>\s
+<end\n
+>?\s
+<say_bye\n
+>Thank you for using Logo. Bye!\n
