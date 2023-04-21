@@ -99,6 +99,7 @@ radarctan run exec
 radarctan_err runl execl
 sign runl execl
 memberp runl execl
+substringp run exec
 member exec run
 member_err execl runl
 wait run exec
