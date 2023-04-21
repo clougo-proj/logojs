@@ -1,0 +1,32 @@
+greaterequalp "1 "abc
+greaterequalp "xyz "-1
+greaterequalp [] 1
+greaterequalp 1 []
+greaterequalp {} 1
+greaterequalp 1 {}
+greaterequalp 1 1=1
+greaterequalp 1 2=1
+greaterequalp 1=1 1
+greaterequalp 2=1 1
+
+greaterequal? "1 "abc
+greaterequal? "xyz "-1
+greaterequal? [] 1
+greaterequal? 1 []
+greaterequal? {} 1
+greaterequal? 1 {}
+greaterequal? 1 1=1
+greaterequal? 1 2=1
+greaterequal? 1=1 1
+greaterequal? 2=1 1
+
+"1 >= "abc
+"xyz >= "-1
+[] >= 1
+1 >= []
+{} >= 1
+1 >= {}
+1 >= (1=1)
+1 >= (2=1)
+1=1 >= 1
+2=1 >= 1

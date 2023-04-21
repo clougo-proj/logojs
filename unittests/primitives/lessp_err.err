@@ -1,0 +1,60 @@
+lessp doesn't like abc as input
+    at 1,1	lessp_err.lgo
+lessp doesn't like xyz as input
+    at 2,1	lessp_err.lgo
+lessp doesn't like [] as input
+    at 3,1	lessp_err.lgo
+lessp doesn't like [] as input
+    at 4,1	lessp_err.lgo
+lessp doesn't like {} as input
+    at 5,1	lessp_err.lgo
+lessp doesn't like {} as input
+    at 6,1	lessp_err.lgo
+lessp doesn't like true as input
+    at 7,1	lessp_err.lgo
+lessp doesn't like false as input
+    at 8,1	lessp_err.lgo
+lessp doesn't like true as input
+    at 9,1	lessp_err.lgo
+lessp doesn't like false as input
+    at 10,1	lessp_err.lgo
+less? doesn't like abc as input
+    at 12,1	lessp_err.lgo
+less? doesn't like xyz as input
+    at 13,1	lessp_err.lgo
+less? doesn't like [] as input
+    at 14,1	lessp_err.lgo
+less? doesn't like [] as input
+    at 15,1	lessp_err.lgo
+less? doesn't like {} as input
+    at 16,1	lessp_err.lgo
+less? doesn't like {} as input
+    at 17,1	lessp_err.lgo
+less? doesn't like true as input
+    at 18,1	lessp_err.lgo
+less? doesn't like false as input
+    at 19,1	lessp_err.lgo
+less? doesn't like true as input
+    at 20,1	lessp_err.lgo
+less? doesn't like false as input
+    at 21,1	lessp_err.lgo
+< doesn't like abc as input
+    at 23,4	lessp_err.lgo
+< doesn't like xyz as input
+    at 24,6	lessp_err.lgo
+< doesn't like [] as input
+    at 25,4	lessp_err.lgo
+< doesn't like [] as input
+    at 26,3	lessp_err.lgo
+< doesn't like {} as input
+    at 27,4	lessp_err.lgo
+< doesn't like {} as input
+    at 28,3	lessp_err.lgo
+< doesn't like true as input
+    at 29,3	lessp_err.lgo
+< doesn't like false as input
+    at 30,3	lessp_err.lgo
+< doesn't like true as input
+    at 31,5	lessp_err.lgo
+< doesn't like false as input
+    at 32,5	lessp_err.lgo
