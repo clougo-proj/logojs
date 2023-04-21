@@ -1,0 +1,32 @@
+lessp "1 "abc
+lessp "xyz "-1
+lessp [] 1
+lessp 1 []
+lessp {} 1
+lessp 1 {}
+lessp 1 1=1
+lessp 1 2=1
+lessp 1=1 1
+lessp 2=1 1
+
+less? "1 "abc
+less? "xyz "-1
+less? [] 1
+less? 1 []
+less? {} 1
+less? 1 {}
+less? 1 1=1
+less? 1 2=1
+less? 1=1 1
+less? 2=1 1
+
+"1 < "abc
+"xyz < "-1
+[] < 1
+1 < []
+{} < 1
+1 < {}
+1 < (1=1)
+1 < (2=1)
+1=1 < 1
+2=1 < 1

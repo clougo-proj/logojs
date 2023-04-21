@@ -217,3 +217,11 @@ dsetfirst exec run
 dsetfirst_err execl runl
 dsetbf exec run
 dsetbf_err execl runl
+lessp exec run
+lessp_err execl runl
+lessequalp exec run
+lessequalp_err execl runl
+greaterp exec run
+greaterp_err execl runl
+greaterequalp exec run
+greaterequalp_err execl runl

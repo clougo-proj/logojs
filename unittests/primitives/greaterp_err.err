@@ -1,0 +1,60 @@
+greaterp doesn't like abc as input
+    at 1,1	greaterp_err.lgo
+greaterp doesn't like xyz as input
+    at 2,1	greaterp_err.lgo
+greaterp doesn't like [] as input
+    at 3,1	greaterp_err.lgo
+greaterp doesn't like [] as input
+    at 4,1	greaterp_err.lgo
+greaterp doesn't like {} as input
+    at 5,1	greaterp_err.lgo
+greaterp doesn't like {} as input
+    at 6,1	greaterp_err.lgo
+greaterp doesn't like true as input
+    at 7,1	greaterp_err.lgo
+greaterp doesn't like false as input
+    at 8,1	greaterp_err.lgo
+greaterp doesn't like true as input
+    at 9,1	greaterp_err.lgo
+greaterp doesn't like false as input
+    at 10,1	greaterp_err.lgo
+greater? doesn't like abc as input
+    at 12,1	greaterp_err.lgo
+greater? doesn't like xyz as input
+    at 13,1	greaterp_err.lgo
+greater? doesn't like [] as input
+    at 14,1	greaterp_err.lgo
+greater? doesn't like [] as input
+    at 15,1	greaterp_err.lgo
+greater? doesn't like {} as input
+    at 16,1	greaterp_err.lgo
+greater? doesn't like {} as input
+    at 17,1	greaterp_err.lgo
+greater? doesn't like true as input
+    at 18,1	greaterp_err.lgo
+greater? doesn't like false as input
+    at 19,1	greaterp_err.lgo
+greater? doesn't like true as input
+    at 20,1	greaterp_err.lgo
+greater? doesn't like false as input
+    at 21,1	greaterp_err.lgo
+> doesn't like abc as input
+    at 23,4	greaterp_err.lgo
+> doesn't like xyz as input
+    at 24,6	greaterp_err.lgo
+> doesn't like [] as input
+    at 25,4	greaterp_err.lgo
+> doesn't like [] as input
+    at 26,3	greaterp_err.lgo
+> doesn't like {} as input
+    at 27,4	greaterp_err.lgo
+> doesn't like {} as input
+    at 28,3	greaterp_err.lgo
+> doesn't like true as input
+    at 29,3	greaterp_err.lgo
+> doesn't like false as input
+    at 30,3	greaterp_err.lgo
+> doesn't like true as input
+    at 31,5	greaterp_err.lgo
+> doesn't like false as input
+    at 32,5	greaterp_err.lgo
