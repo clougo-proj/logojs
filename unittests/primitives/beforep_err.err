@@ -1,0 +1,16 @@
+beforep doesn't like [] as input
+    at 1,1	beforep_err.lgo
+beforep doesn't like [] as input
+    at 2,1	beforep_err.lgo
+beforep doesn't like {} as input
+    at 3,1	beforep_err.lgo
+beforep doesn't like {} as input
+    at 4,1	beforep_err.lgo
+before? doesn't like [] as input
+    at 6,1	beforep_err.lgo
+before? doesn't like [] as input
+    at 7,1	beforep_err.lgo
+before? doesn't like {} as input
+    at 8,1	beforep_err.lgo
+before? doesn't like {} as input
+    at 9,1	beforep_err.lgo

@@ -1,0 +1,9 @@
+beforep [] 1
+beforep 1 []
+beforep {} 1
+beforep 1 {}
+
+before? [] 1
+before? 1 []
+before? {} 1
+before? 1 {}
