@@ -1,0 +1,12 @@
+a has no value
+    at 1,1	pop_err.lgo
+pop doesn't like [] as input
+    at 3,1	pop_err.lgo
+pop doesn't like 1 as input
+    at 5,1	pop_err.lgo
+pop doesn't like true as input
+    at 7,1	pop_err.lgo
+pop doesn't like false as input
+    at 9,1	pop_err.lgo
+pop doesn't like {} as input
+    at 11,1	pop_err.lgo

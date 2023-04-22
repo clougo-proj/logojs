@@ -1,0 +1,11 @@
+pop "a
+make "a []
+pop "a
+make "a 1
+pop "a
+make "a 1=1
+pop "a
+make "a 2=1
+pop "a
+make "a {}
+pop "a
