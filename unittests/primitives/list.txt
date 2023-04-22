@@ -33,6 +33,8 @@ butfirst run exec
 butfirst_err runl execl
 butlast run exec
 butlast_err runl execl
+queue run exec
+queue_err runl execl
 array run exec
 array_err runl execl
 sqrt run exec

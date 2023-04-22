@@ -1,0 +1,10 @@
+a has no value
+    at 1,1	queue_err.lgo
+queue doesn't like 1 as input
+    at 3,1	queue_err.lgo
+queue doesn't like true as input
+    at 5,1	queue_err.lgo
+queue doesn't like false as input
+    at 7,1	queue_err.lgo
+queue doesn't like {} as input
+    at 9,1	queue_err.lgo

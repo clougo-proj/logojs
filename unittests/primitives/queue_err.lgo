@@ -1,0 +1,9 @@
+queue "a 0
+make "a 1
+queue "a 0
+make "a 1=1
+queue "a 0
+make "a 2=1
+queue "a 0
+make "a {}
+queue "a 0
