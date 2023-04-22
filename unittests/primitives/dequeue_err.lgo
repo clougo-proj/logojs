@@ -1,0 +1,11 @@
+dequeue "a
+make "a []
+dequeue "a
+make "a 1
+dequeue "a
+make "a 1=1
+dequeue "a
+make "a 2=1
+dequeue "a
+make "a {}
+dequeue "a
