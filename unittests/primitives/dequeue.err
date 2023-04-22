@@ -1,0 +1,2 @@
+dequeue doesn't like [] as input
+    at 9,6	dequeue.lgo
