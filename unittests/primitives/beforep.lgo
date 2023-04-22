@@ -1,0 +1,27 @@
+show beforep "a "b
+show beforep "a "bcd
+show beforep "b "bcd
+show beforep "bc "bcd
+show beforep "bcd "bcd
+show beforep "bce "bcd
+show beforep "3 "12
+show beforep "12 "3
+show beforep "1 "abc
+show beforep "xyz "-1
+show beforep 1=1 2=1
+show beforep 2=1 1=1
+
+pr "
+
+show before? "a "b
+show before? "a "bcd
+show before? "b "bcd
+show before? "bc "bcd
+show before? "bcd "bcd
+show before? "bce "bcd
+show before? "3 "12
+show before? "12 "3
+show before? "1 "abc
+show before? "xyz "-1
+show before? 1=1 2=1
+show before? 2=1 1=1
