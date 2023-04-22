@@ -1,0 +1,7 @@
+make "a [1 2 3]
+make "b :a
+show :a
+show :b
+queue "a 4
+show :a
+show :b
