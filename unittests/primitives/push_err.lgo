@@ -1,0 +1,9 @@
+push "a 0
+make "a 1
+push "a 0
+make "a 1=1
+push "a 0
+make "a 2=1
+push "a 0
+make "a {}
+push "a 0

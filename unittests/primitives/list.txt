@@ -37,6 +37,10 @@ queue run exec
 queue_err runl execl
 dequeue run exec
 dequeue_err runl execl
+push run exec
+push_err runl execl
+pop run exec
+pop_err runl execl
 array run exec
 array_err runl execl
 sqrt run exec
