@@ -6,6 +6,8 @@
 // Logo's runtime library
 // Runs in browser's Logo worker thread or Node's main thread
 
+import CONSTANTS from "../constants.js";
+
 import Ds from "../lib/ds.js";
 import Comm from "../lib/comm.js";
 import Al from "../lib/al.js";
@@ -20,7 +22,7 @@ export default {
     "create": function(logo, sys) {
         const lrt = {};
 
-        const PROC_ATTRIBUTE = logo.constants.PROC_ATTRIBUTE;
+        const PROC_ATTRIBUTE = CONSTANTS.PROC_ATTRIBUTE;
 
         function isSimplePrimitiveDef(entry) {
             return entry instanceof Function;

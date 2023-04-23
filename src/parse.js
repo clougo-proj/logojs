@@ -5,11 +5,13 @@
 
 // Logo parser
 
+import CONSTANTS from "../constants.js";
+
 export default {
     "create": function(logo, sys) {
         const parse = {};
 
-        const PROC_ATTRIBUTE = logo.constants.PROC_ATTRIBUTE;
+        const PROC_ATTRIBUTE = CONSTANTS.PROC_ATTRIBUTE;
 
         const PROC_DECL = "to";
 
@@ -453,7 +455,7 @@ export default {
                     convertFormalParam();
                     _parseLastTo = NOT_APPLICABLE;
                 } else if (_parseStack.length == 0) {
-                    insertParseWord(logo.type.NEWLINE, s.length);
+                    insertParseWord(CONSTANTS.NEWLINE, s.length);
                 }
 
                 _parseWordLine = _parseLine + 1;

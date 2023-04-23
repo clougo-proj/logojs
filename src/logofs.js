@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------------------------------
 // Copyright (C) Clougo Project. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed under the MIT license. See LICENSE file in the project _root for full license information.
 //-------------------------------------------------------------------------------------------------------
 
 export default {
@@ -12,21 +12,21 @@ export default {
             "READWRITE": 1
         };
 
-        const jsonFile = {
+        const _jsonFile = {
             "unittests": sys.global.unitTestsJsSrcFile,
             "demo": sys.global.demoJsSrcFile,
             "ucblogo": sys.global.ucbLogoJsSrcFile,
             "mod": sys.global.modJsSrcFile
         };
 
-        const root = {};
+        const _root = {};
 
         function getJsonFileName(top) {
-            return jsonFile[top];
+            return _jsonFile[top];
         }
 
         function mount(jsonObj, top, mode) {
-            root[top] = {
+            _root[top] = {
                 "MOUNT_MODE": mode,
                 "JSON": jsonObj
             };
@@ -42,7 +42,7 @@ export default {
 
 
         async function mountIfNeeded(top) {
-            if (!(top in root) && (top in jsonFile)) {
+            if (!(top in _root) && (top in _jsonFile)) {
                 mount( await getJsonFileName(top)(), top, MOUNT_MODE.READONLY);
             }
         }
@@ -81,11 +81,11 @@ export default {
             path.shift();
             let top = path.shift();
             await mountIfNeeded(top);
-            if (!(top in root)) {
+            if (!(top in _root)) {
                 return undefined;
             }
 
-            let currentObj =  root[top].JSON;
+            let currentObj =  _root[top].JSON;
             while (path.length > 0) {
                 let objName = path.shift();
                 if (!(objName in currentObj)) {

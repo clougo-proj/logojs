@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //-------------------------------------------------------------------------------------------------------
 
+import seedRandom from "../seedrandom/seedrandom.min.js";
+
 export default {
     "create": function(isNodeJsEnvFlag) {
         const sys = {};
@@ -79,6 +81,9 @@ export default {
             return isNaN(t) ? s : t;
         }
         sys.toNumberIfApplicable = toNumberIfApplicable;
+
+        seedRandom();
+        sys.random = new Math.seedrandom(Math.random());
 
         return sys;
     }

@@ -3,15 +3,17 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //-------------------------------------------------------------------------------------------------------
 
+import CONSTANTS from "../constants.js";
+
 export default {
-    "create": function(logo, sys) {
+    "create": function(sys) {
         const type = {};
 
-        const LOGO_EXCEPTIONS = logo.constants.LOGO_EXCEPTIONS;
+        const LOGO_EXCEPTIONS = CONSTANTS.LOGO_EXCEPTIONS;
 
-        const PROC_ATTRIBUTE = logo.constants.PROC_ATTRIBUTE;
+        const PROC_ATTRIBUTE = CONSTANTS.PROC_ATTRIBUTE;
 
-        const CLASSNAME = logo.constants.CLASSNAME;
+        const CLASSNAME = CONSTANTS.CLASSNAME;
 
         const LIST_HEAD_SIZE = 2;
         const ARRAY_HEAD_SIZE = 2;
@@ -19,7 +21,6 @@ export default {
         const SRCMAP_NULL = 0;
         const LIST_ORIGIN = 1;
         const ARRAY_DEFAULT_ORIGIN = 1;
-        const NEWLINE = "\n";
         const CLOSE_PAREN = ")";
         const LAMBDA_EXPR = "[]";
         const INDEX_NOT_FOUND = -1;
@@ -30,7 +31,6 @@ export default {
         type.SRCMAP_NULL = SRCMAP_NULL;
         type.LIST_ORIGIN = LIST_ORIGIN;
         type.ARRAY_DEFAULT_ORIGIN = ARRAY_DEFAULT_ORIGIN;
-        type.NEWLINE = NEWLINE;
         type.CLOSE_PAREN = CLOSE_PAREN;
         type.LAMBDA_EXPR = LAMBDA_EXPR;
         type.INDEX_NOT_FOUND = INDEX_NOT_FOUND;
@@ -623,7 +623,7 @@ export default {
 
         function charToAscii(word) {
             let charCode = (typeof word === "string") ? word.charCodeAt(0) : 48 + word; // typeof word === "number"
-            throwIf(!isAscii(charCode), LogoException.INVALID_INPUT, word);
+            // throwIf(!isAscii(charCode), LogoException.INVALID_INPUT, word);
             return charCode;
         }
         type.charToAscii = charToAscii;
@@ -686,7 +686,7 @@ export default {
         type.formalSrcmapFromProcText = formalSrcmapFromProcText;
 
         function bodyFromProcText(template) {
-            return makeLogoList(flattenList(unboxList(listButFirst(template)), NEWLINE));
+            return makeLogoList(flattenList(unboxList(listButFirst(template)), CONSTANTS.NEWLINE));
         }
         type.bodyFromProcText = bodyFromProcText;
 
@@ -701,159 +701,6 @@ export default {
             return Array.isArray(templateSrcmap) ? templateSrcmap[0] : templateSrcmap;
         }
         type.getTemplateSrcmap = getTemplateSrcmap;
-
-        function throwIf(predicate, exception, value) {
-            if (predicate) {
-                throw exception.withParam(
-                    [logo.env.getProcName(), toString(value, true)],
-                    logo.env.getProcSrcmap());
-            }
-        }
-        type.throwIf = throwIf;
-
-        function checkMinInputCount(value) {
-            throwIf(!(value >= logo.env.getProcParsedFormal(logo.env.getProcName()).minInputCount),
-                "NOT_ENOUGH_INPUTS", value);
-        }
-        type.checkMinInputCount = checkMinInputCount;
-
-        function validateInputBoolean(value) {
-            throwIf(!isLogoBoolean(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputBoolean = validateInputBoolean;
-
-        function validateInputWord(value) {
-            throwIf(!isLogoWord(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputWord = validateInputWord;
-
-        function validateInputCharacter(value) {
-            throwIf(!isLogoCharacter(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputCharacter = validateInputCharacter;
-
-        function validateInputInteger(value) {
-            throwIf(!isLogoNumber(value) || !sys.isInteger(Number(value)), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputInteger = validateInputInteger;
-
-        function validateInputNonNegInteger(value) {
-            throwIf(!isLogoNumber(value) || !isNonNegInteger(Number(value)), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNonNegInteger = validateInputNonNegInteger;
-
-        function validateInputPosInteger(value) {
-            throwIf(!isPosInteger(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputPosInteger = validateInputPosInteger;
-
-        function validateInputNumber(value) {
-            throwIf(!isLogoNumber(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNumber = validateInputNumber;
-
-        function validateNumber(value, exception, srcmap, exceptionParam) {
-            if (!isLogoNumber(value)) {
-                throw exception.withParam(exceptionParam, srcmap);
-            }
-        }
-        type.validateNumber = validateNumber;
-
-        function validateInputNonZeroNumber(value) {
-            throwIf(!(isLogoNumber(value) && value != 0), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNonZeroNumber = validateInputNonZeroNumber;
-
-        function validateInputNonNegNumber(value) {
-            throwIf(!(isLogoNumber(value) && value >= 0), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNonNegNumber = validateInputNonNegNumber;
-
-        function validateInputPosNumber(value) {
-            throwIf(!(isLogoNumber(value) && value > 0), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputPosNumber = validateInputPosNumber;
-
-        function validateInputNonEmptyWord(value) {
-            throwIf(!(typeof value == "number" || (isLogoWord(value) && value.length > 0)), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNonEmptyWord = validateInputNonEmptyWord;
-
-        function validateIndexWithinWordRange(index, word) {
-            throwIf(index < 1 || index > word.length, LogoException.INVALID_INPUT, index);
-        }
-        type.validateIndexWithinWordRange = validateIndexWithinWordRange;
-
-        function validateInputList(value) {
-            throwIf(!isLogoList(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputList = validateInputList;
-
-        function validateInputWordOrList(value) {
-            throwIf(!isLogoWord(value) && !isLogoList(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputWordOrList = validateInputWordOrList;
-
-        function validateInputNonEmptyList(value) {
-            throwIf(!(isLogoList(value) && length(value) > 0), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNonEmptyList = validateInputNonEmptyList;
-
-        function validateInputNonEmptyWordOrList(value) {
-            throwIf(!(typeof value == "number" || (isLogoWord(value) && value.length > 0)) && !(isLogoList(value) && length(value) > 0),
-                LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputNonEmptyWordOrList = validateInputNonEmptyWordOrList;
-
-        function validateInputRGB(value) {
-            throwIf(!isColor(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputRGB = validateInputRGB;
-
-        function validateInputPensize(value) {
-            throwIf(!((sys.isInteger(value) && value > 0) || (isLogoList(value) &&
-                length(value) == 2 && listItem(1, value) > 0 && listItem(2, value) > 0)),
-            LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputPensize = validateInputPensize;
-
-        function validateInputXY(value) {
-            throwIf(!(isLogoList(value) && length(value) == 2 && isLogoNumber(
-                listItem(1, value)) && isLogoNumber(listItem(2, value))),
-            LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputXY = validateInputXY;
-
-        function validateInputMacro(name) {
-            throwIf(!(logo.env.isMacro(name) && logo.env.isCallableProc(name)), LogoException.NOT_MACRO, name);
-        }
-        type.validateInputMacro = validateInputMacro;
-
-        function validateIndexWithinListRange(index, list) {
-            throwIf(!listIndexWithinRange(index, list), LogoException.INVALID_INPUT, index);
-        }
-        type.validateIndexWithinListRange = validateIndexWithinListRange;
-
-        function validateInputArray(value) {
-            throwIf(!isLogoArray(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputArray = validateInputArray;
-
-        function validateInputArraySize(value) {
-            throwIf(!isLogoNumber(value) || !sys.isInteger(Number(value)) || Number(value) > MAX_ARRAY_INDEX,
-                LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputArraySize = validateInputArraySize;
-
-        function validateInputByte(value) {
-            throwIf(!isByteValue(value), LogoException.INVALID_INPUT, value);
-        }
-        type.validateInputByte = validateInputByte;
-
-        function validateIndexWithinArrayRange(index, array) {
-            throwIf(!arrayIndexWithinRange(index, array), LogoException.INVALID_INPUT, index);
-        }
-        type.validateIndexWithinArrayRange = validateIndexWithinArrayRange;
 
         function isLogoWord(v){
             return typeof v === "string" || typeof v === "number" || typeof v === "boolean";
@@ -1141,6 +988,7 @@ export default {
         function isPosInteger(value) {
             return sys.isInteger(value) && value > 0;
         }
+        type.isPosInteger = isPosInteger;
 
         function isNumericConstant(curToken) {
             return typeof curToken !== "boolean" && typeof curToken !== "object" && !isNaN(Number(curToken));
@@ -1207,16 +1055,6 @@ export default {
             return JSON.stringify(srcmap);
         }
 
-        function getVarValue(varname, srcmap) {
-            const curScope = logo.env.findLogoVarScope(varname);
-            if (!(varname in curScope)) {
-                throw LogoException.VAR_HAS_NO_VALUE.withParam([varname], srcmap);
-            }
-
-            return curScope[varname];
-        }
-        type.getVarValue = getVarValue;
-
         function equal(a, b) {
             if (isLogoList(a) && isLogoList(b)) {
                 return listEqual(a, b);
@@ -1270,7 +1108,6 @@ export default {
             let word = "";
             for (let i in list) {
                 let item = list[i];
-                validateInputWord(item);
                 word += item;
             }
 
@@ -1303,6 +1140,17 @@ export default {
         }
         type.contains = contains;
 
+        function isLogoClassObj(obj) {
+            return typeof obj === "object" && obj !== null && !Array.isArray(obj) &&
+                (Object.prototype.hasOwnProperty.call(obj, CLASSNAME));
+        }
+        type.isLogoClassObj = isLogoClassObj;
+
+        function isValidArraySize(value) {
+            return isLogoNumber(value) && sys.isInteger(Number(value)) && Number(value) <= MAX_ARRAY_INDEX;
+        }
+        type.isValidArraySize = isValidArraySize;
+
         function toString(v, outterBracket = false) {
             let cyclicSet = new Set();
 
@@ -1314,7 +1162,7 @@ export default {
                 return "no value";
             }
 
-            if (logo.env.isLogoClassObj(v)) {
+            if (isLogoClassObj(v)) {
                 return "[ClassObj " + getLogoClassName(v) + "]";
             }
 
