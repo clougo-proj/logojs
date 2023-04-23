@@ -9,67 +9,67 @@
 
 import { readFileSync } from "fs";
 
-import { Logo, sys } from "./src/logoc.js";
+import Sys from "./src/sys.js";
 
-const out = console.log; // eslint-disable-line no-console
-const outn = function(v) { process.stdout.write(v); };
-const err = console.error; // eslint-disable-line no-console
+import { Logo } from "./src/logoc.js";
 
-Logo.testRunner.out = out;
-Logo.testRunner.outn = outn;
+logocli();
 
-const ext = makeLogoHost();
-const logo = Logo.create(ext);
-const cmd = parseArgv(process.argv);
+async function logocli() {
+    const sys = Sys.create(true);
 
-logo.env.loadDefaultLogoModules()
-    .then(postCreation);
+    const host = makeLogoHost();
 
-function postCreation() {
-    const srcRunner = makeSrcRunner();
+    const cmd = parseArgv(process.argv);
+
+    let logoCore = await Logo.create(host, sys);
+    await logoCore.setConfigs(cmd.options);
 
     let cwd = process.cwd();
 
     cwd.replace(/\\/, "/");
 
-    if (!("file" in cmd) && cmd.op === Logo.mode.EXEC) {
-        cmd.op = Logo.mode.CONSOLE;
+    if (!("file" in cmd) && cmd.op === "exec") {
+        cmd.op = "console";
     }
 
-    if (cmd.op in srcRunner) {
-        logo.env.getGlobalScope().argv = logo.type.makeLogoList(cmd.argv);
+    if (cmd.op === "test") {
+        try {
+            let failCount = await logoCore.test("file" in cmd ? [cmd.file] : []);
+            if (failCount) {
+                process.exit(-1);
+            }
+
+            return;
+        } catch (e) {
+            console.error(e);
+            process.exit(-1);
+        }
+    }
+
+    sys.assert(logoCore.isLogoMode(cmd.op), "Unknown option " + cmd.op);
+
+    if (cmd.op in logoCore && "file" in cmd) {
+        logoCore.setArgv(cmd.argv);
 
         const logoSrc = readFileSync(cwd + "/" + cmd.file, "utf8"); // logo source file (.lgo)
 
-        srcRunner[cmd.op](logoSrc, cmd.file)
-            .then(() => process.exit())
-            .catch(e => {
-                err(e);
-                process.exit(-1);
-            });
-
-        return;
+        try {
+            await logoCore[cmd.op](logoSrc, cmd.file);
+            process.exit();
+        } catch (e) {
+            console.error(e);
+            process.exit(-1);
+        }
     }
 
-    if (cmd.op === Logo.mode.TEST) {
-        Logo.testRunner.runTests("file" in cmd ? [cmd.file] : [], logo)
-            .then(failCount => process.exit(failCount !== 0))
-            .catch(e => {
-                err(e);
-                process.exit(-1);
-            });
-
-        return;
-    }
-
-    if (cmd.op === Logo.mode.CONSOLE) {
+    if (cmd.op === "console") {
         process.stdout.write("Welcome to Logo\n? ");
-        logo.env.setInteractiveMode();
-        setupInputListener(logo.env.console, logo.env.getEnvState);
+        setupInputListener(logoCore.console, logoCore.getEnvState);
         return;
     }
 
-    err(
+    console.error(
         "Usage:\n" +
             "\tnode logo                            - interactive mode\n" +
             "\tnode logo <LGO file>                 - compile to JS and execute\n" +
@@ -84,129 +84,96 @@ function postCreation() {
     );
 
     process.exit();
-}
+    // }
 
-function parseArgv(argv) {
-    let cmd = {};
+    function parseArgv(argv) {
+        let cmd = {};
 
-    cmd.op = Logo.mode.EXEC;
-    cmd.argv = [];
+        cmd.op = "exec";
+        cmd.argv = [];
+        cmd.options = [];
 
-    for(let i = 2; i < argv.length; i++) {
-        if (!("file" in cmd)) {
-            if (argv[i].match(/^--/)) {
-                parseOption(argv[i].substring(2));
-                continue;
+        for(let i = 2; i < argv.length; i++) {
+            if (!("file" in cmd)) {
+                if (argv[i].match(/^--/)) {
+                    let option = argv[i].substring(2);
+                    if (argv[i].includes(":")) {
+                        cmd.options.push(option);
+                    } else {
+                        cmd.op = option;
+                    }
+
+                    continue;
+                }
+
+                cmd.file = argv[i];
+            } else {
+                cmd.argv.push(argv[i]);
             }
-
-            cmd.file = argv[i];
-        } else {
-            cmd.argv.push(argv[i]);
         }
+
+        return cmd;
     }
 
-    return cmd;
+    function makeLogoHost() {
+        let _focus = "Clougo";
 
-    function parseOption(optionStr) {
-        let expectedOptions = {
-            "on": (key) => logo.config.set(key, true),
-            "off": (key) => logo.config.set(key, false),
-            "trace": logo.trace.enableTrace
+        const logoEvent = {
+            "exit": function() {
+                process.exit();
+            },
+            "out": console.log,  // eslint-disable-line no-console
+            "outn": function(v) { process.stdout.write(v); },
+            "err": console.error,  // eslint-disable-line no-console
+            "errn": function(v) { process.stderr.write(v); },
+            "cleartext": function() { process.stdout.write(sys.getCleartextChar()); },
+            "getfocus": function() { return _focus; },
+            "setfocus": function(name) { _focus = name; }
         };
 
-        let optionPair = optionStr.split(":");
-
-        if (optionPair.length == 2) {
-            sys.assert(optionPair[0] in expectedOptions, "Unknown option " + optionPair[0]);
-
-            optionPair[1].split(",").map(expectedOptions[optionPair[0]]);
-            return;
-        }
-
-        sys.assert(optionPair.length == 1, "Option parse error:" + optionStr);
-        sys.assert(optionPair[0] in Logo.modeName, "Unknown option " + optionPair[0]);
-
-        cmd.op = optionPair[0];
-    }
-}
-
-function makeSrcRunner() {
-    const srcRunner = {};
-
-    srcRunner[Logo.mode.RUN] = logo.env.logoRun,
-    srcRunner[Logo.mode.RUNL] = logo.env.logoRunByLine,
-    srcRunner[Logo.mode.EXEC] = logo.env.logoExec,
-    srcRunner[Logo.mode.EXECL] = logo.env.logoExecByLine,
-    srcRunner[Logo.mode.EXECJS] = async function(src) { await logo.env.evalLogoJsTimed(src); };
-    srcRunner[Logo.mode.PARSE] = async function(src) {
-        out(JSON.stringify(logo.parse.parseBlock(logo.parse.parseSrc(src, 1))));
-    };
-
-    srcRunner[Logo.mode.CODEGEN] = async function(src) {
-        out(await logo.env.codegenOnly(src));
-    };
-
-    return srcRunner;
-}
-
-function makeLogoHost() {
-    let _focus = "Clougo";
-
-    const logoEvent = {
-        "exit": function(batchMode) {
-            if (!batchMode) {
-                out("Thank you for using Logo. Bye!");
-            }
-
-            process.exit();
-        },
-        "out": console.log,  // eslint-disable-line no-console
-        "outn": function(v) { process.stdout.write(v); },
-        "err": console.error,  // eslint-disable-line no-console
-        "errn": function(v) { process.stderr.write(v); },
-        "cleartext": function() { process.stdout.write(sys.getCleartextChar()); },
-        "getfocus": function() { return _focus; },
-        "setfocus": function(name) { _focus = name; }
-    };
-
-    return  {
-        "io": {
-            "call": function(...args) {
-                let procName = args.shift();
-                if (procName in logoEvent) {
-                    return logoEvent[procName].apply(null, args);
+        return  {
+            "io": {
+                "call": function(...args) {
+                    let procName = args.shift();
+                    if (procName in logoEvent) {
+                        return logoEvent[procName].apply(null, args);
+                    }
+                },
+                "readfile": fileName => readFileSync(fileName, "utf8")
+            },
+            "canvas": {
+                "flush": () => {},
+                "sendCmd": function(cmd, args = []) {
+                    logoCore.trace(cmd + " " + args.map(sys.logoFround6).join(" "), "draw");
+                },
+                "sendCmdAsString": function(cmd, args = []) {
+                    logoCore.trace(cmd + " " + args.join(" "), "draw");
                 }
-            },
-            "readfile": fileName => readFileSync(fileName, "utf8")
-        },
-        "canvas": {
-            "flush": () => {},
-            "sendCmd": function(cmd, args = []) {
-                logo.trace.info(cmd + " " + args.map(sys.logoFround6).join(" "), "draw");
-            },
-            "sendCmdAsString": function(cmd, args = []) {
-                logo.trace.info(cmd + " " + args.join(" "), "draw");
             }
-        }
-    };
-}
+        };
+    }
 
-function setupInputListener(logoUserInputListener, getEnvState) {
-    const sysstdin = process.openStdin();
-    sysstdin.addListener("data", function(d) {
-        logoUserInputListener(d).then(() => {
-
-            let envState = getEnvState();
-
-            if (envState == "exit") {
-                process.exit();
+    function setupInputListener(logoUserInputListener, getEnvState) {
+        const sysstdin = process.openStdin();
+        sysstdin.addListener("data", function(d) {
+            if (d !== undefined) {
+                d = d.toString().trimEnd();
             }
 
-            let prompt = envState == "ready" ? "? " :
-                envState == "multiline" ? "> " :
-                    envState == "vbar" ? "| " : "";
+            logoUserInputListener(d).then(() => {
 
-            process.stdout.write(prompt);
+                let envState = getEnvState();
+
+                if (envState == "exit") {
+                    process.exit();
+                }
+
+                let prompt = envState == "ready" ? "? " :
+                    envState == "multiline" ? "> " :
+                        envState == "vbar" ? "| " : "";
+
+                process.stdout.write(prompt);
+            });
         });
-    });
+    }
 }

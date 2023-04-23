@@ -6,11 +6,13 @@
 // Interprets parsed Logo code
 // Runs in browser's Logo worker thread or Node's main thread
 
+import CONSTANTS from "../constants.js";
+
 export default {
     "create": function(logo, sys) {
         const interpreter = {};
 
-        const PROC_PARAM = logo.constants.PROC_PARAM;
+        const PROC_PARAM = CONSTANTS.PROC_PARAM;
 
         function makeEvalContext(body) {
             const obj = Object.create({
@@ -48,7 +50,7 @@ export default {
                         logo.lrt.util.isBinaryOperator(this.body[this.ptr + 1]);
                 },
                 isTokenEndOfStatement: function(token) {
-                    return sys.isUndefined(token) || token === logo.type.NEWLINE;
+                    return sys.isUndefined(token) || token === CONSTANTS.NEWLINE;
                 },
                 peekNextToken : function() {
                     if (sys.isUndefined(this.body) || this.ptr + 1 >= this.body.length) {
@@ -169,7 +171,7 @@ export default {
             evxContext.retVal = undefined;
             let curToken = evxContext.getToken();
 
-            while ((!stopAtLineEnd && curToken === logo.type.NEWLINE) &&
+            while ((!stopAtLineEnd && curToken === CONSTANTS.NEWLINE) &&
                 !sys.isUndefined(curToken) && evxContext.hasNext()) {
 
                 curToken = evxContext.next().getToken();
@@ -209,7 +211,7 @@ export default {
             } else if (logo.type.isQuotedLogoWord(curToken)) {
                 evxContext.retVal = logo.type.unquoteLogoWord(curToken);
             } else if (logo.type.isLogoVarRef(curToken)) {
-                evxContext.retVal = logo.type.getVarValue(logo.env.extractVarName(curToken), curSrcmap);
+                evxContext.retVal = logo.env.getVarValue(logo.env.extractVarName(curToken), curSrcmap);
             } else if (logo.type.isLogoSlot(curToken)) {
                 evxContext.proc = "?";
                 evxContext.retVal = logo.env.callProc("?", curSrcmap, logo.env.extractSlotNum(curToken));
@@ -342,7 +344,7 @@ export default {
 
         async function evxNextNumberExpr(evxContext, exception, exceptionParam, srcmap) {
             await evxToken(evxContext.next());
-            logo.type.validateNumber(evxContext.retVal, exception, srcmap, exceptionParam);
+            logo.env.validateNumber(evxContext.retVal, exception, srcmap, exceptionParam);
         }
         interpreter.evxNextNumberExpr = evxNextNumberExpr;
 
@@ -360,7 +362,7 @@ export default {
         interpreter.evxInstrListWithFormalParam = evxInstrListWithFormalParam;
 
         async function evxInstrList(bodyComp, slot = {}, pushStack = true, allowRetVal = false, macroExpand = false) {
-            logo.type.validateInputList(bodyComp);
+            logo.env.validateInputList(bodyComp);
             let parsedBlock = logo.parse.parseBlock(bodyComp);
             if (!logo.type.hasReferenceSrcmap(bodyComp) || !pushStack) {
                 return await evxBody(parsedBlock, allowRetVal, macroExpand);

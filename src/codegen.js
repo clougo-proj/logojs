@@ -6,12 +6,14 @@
 // Transpiles parsed Logo code into JavaScript
 // Runs in browser's Logo worker thread or Node's main thread
 
+import CONSTANTS from "../constants.js";
+
 export default {
     "create": function(logo, sys) {
 
         const TOP_LEVEL_FUNC = "";
 
-        const PROC_PARAM = logo.constants.PROC_PARAM;
+        const PROC_PARAM = CONSTANTS.PROC_PARAM;
 
         const codegen = {};
 
@@ -287,7 +289,7 @@ export default {
         function genInstrListHelper(curToken, srcmap, procName, parentSrcmap, allowUnusedValue = false) {
             let code = Code.expr();
 
-            if (sys.isUndefined(curToken) || curToken === logo.type.NEWLINE) {
+            if (sys.isUndefined(curToken) || curToken === CONSTANTS.NEWLINE) {
                 code.append(genThrowNotEnoughInputs(srcmap, procName));
             } else if (logo.type.isLogoList(curToken)) {
                 let comp = logo.parse.parseBlock(logo.type.embedSrcmap(curToken, srcmap));
@@ -517,7 +519,7 @@ export default {
         }
 
         function genValidateNumber(srcmap, token) {
-            return Code.stmt("logo.type.validateNumber($ret,logo.type.LogoException.INVALID_INPUT,",
+            return Code.stmt("logo.env.validateNumber($ret,logo.type.LogoException.INVALID_INPUT,",
                 logo.type.srcmapToJs(srcmap), ",['for','", logo.type.toString(token, true), "']);\n");
         }
 

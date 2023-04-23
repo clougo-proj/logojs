@@ -5,6 +5,7 @@
 
 export default {
     MAX_UNDO_DEPTH: 100,
+    NEWLINE: "\n",
     CLASSNAME: "$CLASSNAME",
     LOGO_LIBRARY: {
         "DATA_STRUCT": "ds",

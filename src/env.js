@@ -6,19 +6,16 @@
 // Logo runtime environment
 // Runs in browser's Logo worker thread or Node's main thread
 
+import CONSTANTS from "../constants.js";
+
 export default {
     "create": function(logo, sys) {
 
         const DEFAULT_MODULE = "main";
 
-        const CLASSNAME = logo.constants.CLASSNAME;
+        const CLASSNAME = CONSTANTS.CLASSNAME;
 
         const env = {};
-
-        const LogoMode = {
-            "BATCH": 0,
-            "INTERACTIVE": 1
-        };
 
         const mod = {
             "pclogo": [
@@ -29,11 +26,11 @@ export default {
             ]
         };
 
-        const LOGO_LIBRARY = logo.constants.LOGO_LIBRARY;
+        const LOGO_LIBRARY = CONSTANTS.LOGO_LIBRARY;
 
-        const PROC_ATTRIBUTE = logo.constants.PROC_ATTRIBUTE;
+        const PROC_ATTRIBUTE = CONSTANTS.PROC_ATTRIBUTE;
 
-        const PROC_PARAM = logo.constants.PROC_PARAM;
+        const PROC_PARAM = CONSTANTS.PROC_PARAM;
 
         const DEFAULT_PRECEDENCE = 0;
 
@@ -106,7 +103,6 @@ export default {
         }
         env.createParamScope = createParamScope;
 
-        let _logoMode = LogoMode.BATCH;
         let _envState, _runTime, _userInput, _resolveUserInput;
         let _callStack, _frameProcName;
         let _genJs;
@@ -241,15 +237,9 @@ export default {
             return false;
         }
 
-        function isLogoClassObj(obj, className = undefined) {
-            return typeof obj === "object" && obj !== null && !Array.isArray(obj) &&
-                (Object.prototype.hasOwnProperty.call(obj, CLASSNAME) &&
-                (className === undefined || isSubClassOf(obj[CLASSNAME], className)));
-        }
-        env.isLogoClassObj = isLogoClassObj;
-
         function canAccessProperties(obj) {
-            return logo.type.isLogoPlist(obj) || isLogoClassObj(obj, _module);
+            return logo.type.isLogoPlist(obj) ||
+                (logo.type.isLogoClassObj(obj, _module) && isSubClassOf(obj[CLASSNAME], _module));
         }
         env.canAccessProperties = canAccessProperties;
 
@@ -397,7 +387,7 @@ export default {
         env.extractSlotNum = extractSlotNum;
 
         function getSlotValue(slotNum) {
-            logo.type.throwIf(_curSlot === undefined || slotNum > _curSlot.param.length,
+            logo.env.throwIf(_curSlot === undefined || slotNum > _curSlot.param.length,
                 logo.type.LogoException.INVALID_INPUT, slotNum);
 
             return _curSlot.param[slotNum - 1];
@@ -419,7 +409,7 @@ export default {
         env.getSlotMapValue = getSlotMapValue;
 
         function getSlotRestValue(slotNum) {
-            logo.type.throwIf(_curSlot === undefined || slotNum > _curSlot.rest.length,
+            logo.env.throwIf(_curSlot === undefined || slotNum > _curSlot.rest.length,
                 logo.type.LogoException.INVALID_INPUT, slotNum);
 
             let rest = _curSlot.rest[slotNum - 1];
@@ -435,7 +425,7 @@ export default {
             let bodyByLine = [];
             let bodyByLineSrcmap = [];
             for (let begin = logo.type.LIST_HEAD_SIZE; begin < body.length;) {
-                let end = body.indexOf(logo.type.NEWLINE, begin);
+                let end = body.indexOf(CONSTANTS.NEWLINE, begin);
                 let line, lineSrcmap;
                 if (end === -1) {
                     line = body.slice(begin);
@@ -495,36 +485,17 @@ export default {
         }
         env.getGlobalScope = getGlobalScope;
 
-        function batchMode() {
-            return _logoMode == LogoMode.BATCH;
-        }
-        env.batchMode = batchMode;
-
-        function setBatchMode() {
-            _logoMode = LogoMode.BATCH;
-        }
-        env.setBatchMode = setBatchMode;
-
-        function setInteractiveMode() {
-            _logoMode = LogoMode.INTERACTIVE;
-        }
-        env.setInteractiveMode = setInteractiveMode;
-
         function prepareToBeBlocked() {
             logo.canvas.flush();
         }
         env.prepareToBeBlocked = prepareToBeBlocked;
 
         async function _console(userInputBody) { // logoUserInputListener
-            setUserInput(userInputBody.toString());
+            injectUserInput(userInputBody.toString());
 
             if (isPendingUserInput()) {
                 resolveUserInput();
                 return;
-            }
-
-            if (batchMode()) {
-                return; // don't exit while running tests
             }
 
             while (hasUserInput()) {
@@ -540,11 +511,11 @@ export default {
         }
         env.console = _console;
 
-        function setUserInput(val) {
+        function injectUserInput(val) {
             Array.prototype.push.apply(_userInput, val.split(/\r?\n/));
             _userInput.splice(-1, 1); // remove the trailing empty string
         }
-        env.setUserInput = setUserInput;
+        env.injectUserInput = injectUserInput;
 
         function hasUserInput() {
             return _userInput.length > 0;
@@ -999,22 +970,22 @@ export default {
         }
 
         async function runSingleTest(testName, testMethod) {
-            await logo.Logo.testRunner.runSingleTest(testName, testMethod, logo);
-            logo.io.call(logo.env.getEnvState());
+            await logo.testRunner.runSingleTest(testName, testMethod);
+            logo.io.call(getEnvState());
         }
         env.runSingleTest = runSingleTest;
 
         async function logoExec(src, srcPath) {
             logo.io.call("busy");
             await exec(src, true, srcPath);
-            logo.io.call(logo.env.getEnvState());
+            logo.io.call(getEnvState());
         }
         env.logoExec = logoExec;
 
         async function logoRun(src, srcPath) {
             logo.io.call("busy");
             await exec(src, false, srcPath);
-            logo.io.call(logo.env.getEnvState());
+            logo.io.call(getEnvState());
         }
         env.logoRun = logoRun;
 
@@ -1039,14 +1010,14 @@ export default {
         async function logoExecByLine(src, srcPath) {
             logo.io.call("busy");
             await execByLine(src, true, srcPath);
-            logo.io.call(logo.env.getEnvState());
+            logo.io.call(getEnvState());
         }
         env.logoExecByLine = logoExecByLine;
 
         async function logoRunByLine(src, srcPath) {
             logo.io.call("busy");
             await execByLine(src, false, srcPath);
-            logo.io.call(logo.env.getEnvState());
+            logo.io.call(getEnvState());
         }
         env.logoRunByLine = logoRunByLine;
 
@@ -1193,7 +1164,7 @@ export default {
         function stackToDump(stack) {
             return sys.isUndefined(stack) ? "" : stack.map(stackFrameToString)
                 .filter(v => v !== "")
-                .join(logo.type.NEWLINE);
+                .join(CONSTANTS.NEWLINE);
         }
 
         function isNullSrcpath(srcmap) {
@@ -1504,6 +1475,169 @@ export default {
             return v;
         }
         env.logoVar = logoVar;
+
+        function getVarValue(varname, srcmap) {
+            const curScope = findLogoVarScope(varname);
+            if (!(varname in curScope)) {
+                throw logo.type.LogoException.VAR_HAS_NO_VALUE.withParam([varname], srcmap);
+            }
+
+            return curScope[varname];
+        }
+        env.getVarValue = getVarValue;
+
+        function throwIf(predicate, exception, value) {
+            if (predicate) {
+                throw exception.withParam(
+                    [getProcName(), logo.type.toString(value, true)],
+                    getProcSrcmap());
+            }
+        }
+        env.throwIf = throwIf;
+
+        function checkMinInputCount(value) {
+            throwIf(!(value >= getProcParsedFormal(getProcName()).minInputCount),
+                "NOT_ENOUGH_INPUTS", value);
+        }
+        env.checkMinInputCount = checkMinInputCount;
+
+        function validateInputBoolean(value) {
+            throwIf(!logo.type.isLogoBoolean(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputBoolean = validateInputBoolean;
+
+        function validateInputWord(value) {
+            throwIf(!logo.type.isLogoWord(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputWord = validateInputWord;
+
+        function validateInputCharacter(value) {
+            throwIf(!logo.type.isLogoCharacter(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputCharacter = validateInputCharacter;
+
+        function validateInputAsciiCharacter(value) {
+            throwIf(!logo.type.isLogoCharacter(value) || !logo.type.isAscii(logo.type.charToAscii(value)),
+                logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputAsciiCharacter = validateInputAsciiCharacter;
+
+        function validateInputInteger(value) {
+            throwIf(!logo.type.isLogoNumber(value) || !sys.isInteger(Number(value)), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputInteger = validateInputInteger;
+
+        function validateInputPosInteger(value) {
+            throwIf(!logo.type.isPosInteger(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputPosInteger = validateInputPosInteger;
+
+        function validateInputNumber(value) {
+            throwIf(!logo.type.isLogoNumber(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputNumber = validateInputNumber;
+
+        function validateNumber(value, exception, srcmap, exceptionParam) {
+            if (!logo.type.isLogoNumber(value)) {
+                throw exception.withParam(exceptionParam, srcmap);
+            }
+        }
+        env.validateNumber = validateNumber;
+
+        function validateInputNonZeroNumber(value) {
+            throwIf(!(logo.type.isLogoNumber(value) && value != 0), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputNonZeroNumber = validateInputNonZeroNumber;
+
+        function validateInputNonNegNumber(value) {
+            throwIf(!(logo.type.isLogoNumber(value) && value >= 0), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputNonNegNumber = validateInputNonNegNumber;
+
+        function validateInputPosNumber(value) {
+            throwIf(!(logo.type.isLogoNumber(value) && value > 0), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputPosNumber = validateInputPosNumber;
+
+        function validateInputNonEmptyWord(value) {
+            throwIf(!(typeof value == "number" || (logo.type.isLogoWord(value) && value.length > 0)), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputNonEmptyWord = validateInputNonEmptyWord;
+
+        function validateIndexWithinWordRange(index, word) {
+            throwIf(index < 1 || index > word.length, logo.type.LogoException.INVALID_INPUT, index);
+        }
+        env.validateIndexWithinWordRange = validateIndexWithinWordRange;
+
+        function validateInputList(value) {
+            throwIf(!logo.type.isLogoList(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputList = validateInputList;
+
+        function validateInputWordOrList(value) {
+            throwIf(!logo.type.isLogoWord(value) && !logo.type.isLogoList(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputWordOrList = validateInputWordOrList;
+
+        function validateInputNonEmptyList(value) {
+            throwIf(!(logo.type.isLogoList(value) && logo.type.length(value) > 0), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputNonEmptyList = validateInputNonEmptyList;
+
+        function validateInputNonEmptyWordOrList(value) {
+            throwIf(!(typeof value == "number" || (logo.type.isLogoWord(value) && value.length > 0)) && !(logo.type.isLogoList(value) &&
+                logo.type.length(value) > 0), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputNonEmptyWordOrList = validateInputNonEmptyWordOrList;
+
+        function validateInputRGB(value) {
+            throwIf(!logo.type.isColor(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputRGB = validateInputRGB;
+
+        function validateInputPensize(value) {
+            throwIf(!((sys.isInteger(value) && value > 0) || (logo.type.isLogoList(value) &&
+                logo.type.length(value) == 2 && logo.type.listItem(1, value) > 0 && logo.type.listItem(2, value) > 0)),
+            logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputPensize = validateInputPensize;
+
+        function validateInputXY(value) {
+            throwIf(!(logo.type.isLogoList(value) && logo.type.length(value) == 2 && logo.type.isLogoNumber(
+                logo.type.listItem(1, value)) && logo.type.isLogoNumber(logo.type.listItem(2, value))),
+            logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputXY = validateInputXY;
+
+        function validateInputMacro(name) {
+            throwIf(!(isMacro(name) && isCallableProc(name)), logo.type.LogoException.NOT_MACRO, name);
+        }
+        env.validateInputMacro = validateInputMacro;
+
+        function validateIndexWithinListRange(index, list) {
+            throwIf(!logo.type.listIndexWithinRange(index, list), logo.type.LogoException.INVALID_INPUT, index);
+        }
+        env.validateIndexWithinListRange = validateIndexWithinListRange;
+
+        function validateInputArray(value) {
+            throwIf(!logo.type.isLogoArray(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputArray = validateInputArray;
+
+        function validateInputArraySize(value) {
+            throwIf(!logo.type.isValidArraySize(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputArraySize = validateInputArraySize;
+
+        function validateInputByte(value) {
+            throwIf(!logo.type.isByteValue(value), logo.type.LogoException.INVALID_INPUT, value);
+        }
+        env.validateInputByte = validateInputByte;
+
+        function validateIndexWithinArrayRange(index, array) {
+            throwIf(!logo.type.arrayIndexWithinRange(index, array), logo.type.LogoException.INVALID_INPUT, index);
+        }
+        env.validateIndexWithinArrayRange = validateIndexWithinArrayRange;
 
         return env;
     }

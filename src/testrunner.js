@@ -5,19 +5,26 @@
 
 // Logo unit test runner
 
+import CONSTANTS from "../constants.js";
+
 export default {
-    "create": function(Logo, sys) {
+    "create": function(logoCore, sys) {
         const testRunner = {};
 
-        let extForTest, logoForUnitTests;
+        const NEWLINE = CONSTANTS.NEWLINE;
+
+        const out = (val) => logoCore.getHost().io.call("out", val);
+        const outn = (val) => logoCore.getHost().io.call("outn", val);
+
+        let testHost, testCore;
         let count, failCount;
         let reFilter;
         let curDirName;
         let singleTestMode = false;
 
-        async function runTests(testNamePatterns, logo) {
-            initializeTestEnv(logo);
-            singleTestMode = logoForUnitTests.config.get("verbose");
+        async function runTests(testNamePatterns) {
+            await initializeTestEnv(logoCore.getHost());
+            singleTestMode = testCore.getConfig("verbose"); // logoForUnitTests.config.get("verbose");
 
             // make regex for filtering unit tests by their full names
             reFilter = sys.isUndefined(testNamePatterns) ? undefined : sys.makeMatchListRegexp(testNamePatterns);
@@ -25,13 +32,13 @@ export default {
             failCount = 0;
 
             await runUnitTestDir();
-            testRunner.out("Total:" + count + "\tFailed:" + failCount);
+            out("Total:" + count + "\tFailed:" + failCount);
             return failCount;
         }
         testRunner.runTests = runTests;
 
-        async function runSingleTest(fullTestName, testMethod, logo) {
-            initializeTestEnv(logo);
+        async function runSingleTest(fullTestName, testMethod) {
+            await initializeTestEnv(logoCore.getHost());
             singleTestMode = true;
 
             let testInfo = getTestInfo(fullTestName);
@@ -42,9 +49,9 @@ export default {
         }
         testRunner.runSingleTest = runSingleTest;
 
-        function initializeTestEnv(logo) {
-            extForTest = makeLogoTestHost(logo.ext);
-            logoForUnitTests = Logo.create(extForTest, logo.config);
+        async function initializeTestEnv(host) {
+            testHost = makeLogoTestHost(host);
+            testCore = await logoCore.clone(testHost);
         }
 
         function getTestInfo(fullTestName) {
@@ -55,7 +62,7 @@ export default {
         }
 
         function parseTestList(obj) {
-            if (!logoForUnitTests.logofs.exists(obj)) {
+            if (!logoCore.getLogofs().exists(obj)) {
                 return [];
             }
 
@@ -79,7 +86,7 @@ export default {
         }
 
         async function runUnitTestsInCurrentDir(prefix) {
-            let tests = parseTestList(await logoForUnitTests.logofs.tryGetObj(getDirName(prefix) + "/list.txt"));
+            let tests = parseTestList(await logoCore.getLogofs().tryGetObj(getDirName(prefix) + "/list.txt"));
             for (let test of tests) {
                 let testName = prefix + "." + test[0];
                 if (sys.isUndefined(reFilter) || testName.match(reFilter)) {
@@ -89,7 +96,7 @@ export default {
         }
 
         async function runUnitTestsInSubDirs(prefix) {
-            for (let subDir of await logoForUnitTests.logofs.readSubDirs(getDirName(prefix))) {
+            for (let subDir of await logoCore.getLogofs().readSubDirs(getDirName(prefix))) {
                 await runUnitTestDir(sys.isUndefined(prefix) ? subDir : prefix + "." + subDir);
             }
         }
@@ -99,7 +106,7 @@ export default {
             await runUnitTestsInSubDirs(prefix);
         }
 
-        function makeLogoTestHost(ext) {
+        function makeLogoTestHost(host) {
 
             let stdoutBuffer = "";
             let stderrBuffer = "";
@@ -111,13 +118,13 @@ export default {
                 "getfocus": function() { return _focus; },
                 "setfocus":  function(name) { _focus = name; },
                 "out": function(text) {
-                    stdoutBuffer += text + logoForUnitTests.type.NEWLINE;
+                    stdoutBuffer += text + NEWLINE;
                 },
                 "outn": function(text) {
                     stdoutBuffer += text;
                 },
                 "err": function(text) {
-                    stderrBuffer += text + logoForUnitTests.type.NEWLINE;
+                    stderrBuffer += text + NEWLINE;
                 },
                 "errn": function(text) {
                     stderrBuffer += text;
@@ -127,7 +134,7 @@ export default {
                 }
             };
 
-            const extForTest = {
+            const testHost = {
                 "test": {
                     "clearBuffers": function() {
                         stdoutBuffer = "";
@@ -143,7 +150,7 @@ export default {
                             return logoEvent[procName].apply(null, args);
                         }
                     },
-                    "readfile": async fileName => await logoForUnitTests.logofs.readFile(curDirName + "/" + fileName)
+                    "readfile": async fileName => await logoCore.getLogofs().readFile(curDirName + "/" + fileName)
                 },
                 "canvas": {
                     "flush": () => {},
@@ -152,17 +159,17 @@ export default {
                     },
                     "getBuffer": function() { return turtleBuffer; },
                     "sendCmd": function(cmd, args = []) {
-                        ext.canvas.sendCmd(cmd, args);
-                        turtleBuffer += cmd + " " + args.map(sys.logoFround6).join(" ") + logoForUnitTests.type.NEWLINE;
+                        host.canvas.sendCmd(cmd, args);
+                        turtleBuffer += cmd + " " + args.map(sys.logoFround6).join(" ") + NEWLINE;
                     },
                     "sendCmdAsString": function(cmd, args = []) {
-                        ext.canvas.sendCmdAsString(cmd, args);
-                        turtleBuffer += cmd + " " + args.join(" ") + logoForUnitTests.type.NEWLINE;
+                        host.canvas.sendCmdAsString(cmd, args);
+                        turtleBuffer += cmd + " " + args.join(" ") + NEWLINE;
                     }
                 }
             };
 
-            return extForTest;
+            return testHost;
         }
 
         async function runTest(prefix, test) {
@@ -174,16 +181,8 @@ export default {
         }
 
         async function getTestFile(fileName) {
-            try {
-                let ret = await logoForUnitTests.logofs.readFile(curDirName + "/" + fileName);
-                return ret;
-            } catch (e) {
-                if (logoForUnitTests.type.LogoException.CANT_OPEN_FILE.equalsByCode(e)) {
-                    return "";
-                }
-
-                throw e;
-            }
+            let ret = await logoCore.getLogofs().tryGetObj(curDirName + "/" + fileName);
+            return ret === undefined ? "" : ret;
         }
 
         async function getTestSrc(testName) {
@@ -213,15 +212,15 @@ export default {
         async function testParse(testName) {
             let testSrc = await getTestSrc(testName);
             let testParseBase = await getTestParseBase(testName);
-            let parseResult = JSON.stringify(logoForUnitTests.parse.parseBlock(logoForUnitTests.parse.parseSrc(testSrc, 1))) + logoForUnitTests.type.NEWLINE;
+            let parseResult = await testCore.parse(testSrc) + NEWLINE;
             if (parseResult == testParseBase) {
-                testRunner.out("\t\tpassed ");
+                out("\t\tpassed ");
                 return;
             }
 
-            testRunner.out("\t\tfailed");
+            out("\t\tfailed");
             if (singleTestMode) {
-                outputIfDifferent("parsed", testParseBase, parseResult);
+                outputIfDifferent("parsed", parseResult, testParseBase);
             }
 
             failCount++;
@@ -232,9 +231,9 @@ export default {
                 await runTestMethod(testSrc, testName);
                 return true;
             } catch (e) {
-                testRunner.out("\t\tfailed");
+                out("\t\tfailed");
                 if (singleTestMode) {
-                    testRunner.out(e.stack);
+                    out(e.stack);
                 }
 
                 return false;
@@ -244,8 +243,14 @@ export default {
         async function testGenericRun(testName, runTestMethod) {
             let testSrcName = testName + ".lgo";
             let testSrc = await getTestSrc(testName);
-            extForTest.test.clearBuffers();
-            extForTest.canvas.clearBuffer();
+            testHost.test.clearBuffers();
+            testHost.canvas.clearBuffer();
+
+            if (!testSrc) {
+                out("\t\tnot found!");
+                failCount++;
+                return;
+            }
 
             if (!await tryRunTestMethod(testSrc, testSrcName, runTestMethod)) {
                 failCount++;
@@ -256,16 +261,16 @@ export default {
             const errExpected = await getTestErrBase(testName);
             const drawExpected = await getTestDrawBase(testName);
 
-            const outActual = extForTest.test.getStdoutBuffer();
-            const errActual = extForTest.test.getStderrBuffer();
-            const drawActual = extForTest.canvas.getBuffer();
+            const outActual = testHost.test.getStdoutBuffer();
+            const errActual = testHost.test.getStderrBuffer();
+            const drawActual = testHost.canvas.getBuffer();
 
             if (outActual == outExpected && errActual == errExpected && drawActual == drawExpected) {
-                testRunner.out("\t\tpassed\trun time: "+logoForUnitTests.env.getRunTime()+"ms");
+                out("\t\tpassed\trun time: " + testCore.getRunTime() + "ms");
                 return;
             }
 
-            testRunner.out("\t\tfailed");
+            out("\t\tfailed");
             if (singleTestMode) {
                 outputIfDifferent("out", outActual, outExpected);
                 outputIfDifferent("err", errActual, errExpected);
@@ -277,7 +282,7 @@ export default {
 
         function outputIfDifferent(type, actual, expected) {
             if (expected !== actual) {
-                testRunner.out("Expected " + type + ":\n<" + expected + ">\n\tActual " + type + ":\n<" + actual + ">");
+                out("Expected " + type + ":\n<" + expected + ">\n\tActual " + type + ":\n<" + actual + ">");
             }
         }
 
@@ -334,57 +339,27 @@ export default {
                 { "mode": mode, "configOverride": configOverride };
         }
 
-        function overrideLogoConfig(logo, testSettings) {
-            if (!("configOverride" in testSettings)) {
-                return logo.config;
-            }
-
-            let backupConfig = logo.config;
-            logo.config = backupConfig.clone().override(testSettings.configOverride);
-            return backupConfig;
-        }
-
-        function restoreLogoConfig(logo, config) {
-            logo.config = config;
-        }
-
         function getDirName(prefix) {
             return prefix === undefined ? "/unittests" : "/unittests/" + prefix.replace(/\./g, "/");
         }
 
         async function runTestHelper(prefix, testName, testMethod) {
-            curDirName = getDirName(prefix);
-            logoForUnitTests.env.initLogoEnv();
-            logoForUnitTests.env.console(await getTestInBase(testName));
             count++;
 
-            testRunner.outn(prefix + "." + testName + "(" + testMethod + "):");
+            curDirName = getDirName(prefix);
+            outn(prefix + "." + testName + "(" + testMethod + "):");
+
             let testSettings = toTestSettings(testMethod);
-            let backupConfig = overrideLogoConfig(logoForUnitTests, testSettings);
-            await logoForUnitTests.env.loadDefaultLogoModules();
+            let testInBase = (await getTestInBase(testName)).toString();
 
-            switch(testSettings.mode) {
-            case Logo.mode.PARSE:
-                await testParse(testName);
-                break;
-            case Logo.mode.RUNL:
-                await testGenericRun(testName, logoForUnitTests.env.logoRunByLine);
-                break;
-            case Logo.mode.EXECL:
-                await testGenericRun(testName, logoForUnitTests.env.logoExecByLine);
-                break;
-            case Logo.mode.RUN:
-                await testGenericRun(testName, logoForUnitTests.env.logoRun);
-                break;
-            case Logo.mode.EXEC:
-                await testGenericRun(testName, logoForUnitTests.env.logoExec);
-                break;
-            default:
-                testRunner.out("\t\t" + testSettings.mode + " not found");
-                failCount++;
-            }
-
-            restoreLogoConfig(logoForUnitTests, backupConfig);
+            await testCore.runTestHelper(async () => {
+                if (testSettings.mode === "parse") {
+                    await testParse(testName);
+                } else {
+                    sys.assert(testSettings.mode in testCore);
+                    await testGenericRun(testName, testCore[testSettings.mode]);
+                }
+            }, testSettings, testInBase);
         }
 
         return testRunner;
