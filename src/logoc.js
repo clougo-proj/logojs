@@ -74,7 +74,7 @@ Logo.create = async function(host, sys) {
         },
         "test": async function(testNamePatterns) {
             logo.io.call("busy");
-            await testRunner.runTests(testNamePatterns);
+            await logo.testRunner.runTests(testNamePatterns);
             logo.io.call("ready");
         },
         "runTestHelper": async (runTest, testSettings, testInBase) => {
@@ -158,7 +158,7 @@ Logo.create = async function(host, sys) {
         }
     };
 
-    let testRunner = TestRunner.create(logoCore, sys);
+    logo.testRunner = TestRunner.create(logoCore, sys);
 
     return logoCore;
 

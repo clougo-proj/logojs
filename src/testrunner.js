@@ -214,7 +214,7 @@ export default {
             let testParseBase = await getTestParseBase(testName);
             let parseResult = await testCore.parse(testSrc) + NEWLINE;
             if (parseResult == testParseBase) {
-                out("\t\tpassed ");
+                out("\t\tpassed");
                 return;
             }
 
