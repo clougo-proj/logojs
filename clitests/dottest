@@ -1,0 +1,8 @@
+logocli
+>Welcome to Logo\n?\s
+<.test "parse.parse0 "parse\n
+>parse.parse0(parse):
+>\t\tpassed\n
+>?\s
+<bye\n
+>Thank you for using Logo. Bye!\n
