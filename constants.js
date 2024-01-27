@@ -42,6 +42,8 @@ export default {
         NOT_SAME_LENGTH       : [1022, "Inputs of {0} have different lengths"],
         TOO_MANY_INPUTS       : [1023, "Too many inputs to {0}"],
         LAST_ERROR_CODE       : [1024],
+        FILE_NOT_FOUND        : [65529, "File {0} not found."],
+        FILE_EXISTS           : [65530, "File {0} exists."],
         NO_HELP_AVAILABLE     : [65531, "No help available on {0}."],
         CUSTOM                : [65532, "Can't find catch tag for {0}"],
         OUTPUT                : [65534, "Can only use output inside a procedure"],
